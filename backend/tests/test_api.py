@@ -25,6 +25,14 @@ def test_health(client):
     assert response.json() == {"status": "ok"}
 
 
+def test_policy(client):
+    response = client.get("/policy")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["version"] == 1
+    assert "past activities" in data["statement"].lower()
+
+
 def test_research_feed(client):
     response = client.get("/research/feed")
     assert response.status_code == 200

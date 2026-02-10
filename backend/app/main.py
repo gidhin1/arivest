@@ -8,6 +8,7 @@ from .db import init_db, get_session
 from .models import RiskProfile
 from .schemas import RiskProfileIn, RiskProfileOut, ResearchItem, ModelPortfolio, GlossaryTerm
 from .data import research_feed, model_portfolios, glossary_terms
+from .policy import POLICY_STATEMENT, POLICY_VERSION
 
 
 @asynccontextmanager
@@ -35,6 +36,11 @@ app.add_middleware(
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
+@app.get("/policy")
+def get_policy():
+    return {"version": POLICY_VERSION, "statement": POLICY_STATEMENT}
 
 
 @app.get("/research/feed", response_model=list[ResearchItem])

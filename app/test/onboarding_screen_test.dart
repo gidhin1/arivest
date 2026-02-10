@@ -21,6 +21,7 @@ void main() {
 
     expect(find.text('Arivest'), findsOneWidget);
     expect(find.text('Start your learning plan'), findsOneWidget);
+    expect(find.text('Past-only research'), findsOneWidget);
     expect(find.text('Risk appetite'), findsOneWidget);
     expect(find.text('Time horizon (years)'), findsOneWidget);
     expect(find.text('Monthly investment (INR)'), findsOneWidget);

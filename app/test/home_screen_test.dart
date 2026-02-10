@@ -34,6 +34,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Your learning profile'), findsOneWidget);
+    expect(find.text('Past-only research'), findsOneWidget);
     expect(find.text(sampleResearchFeed.first.title), findsOneWidget);
   });
 }

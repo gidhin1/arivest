@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "colors": {
+    "primary": "#0F6C5C",
+    "secondary": "#C0762B",
+    "background": "#F4F1EA",
+    "surface": "#F7F3EC",
+    "onSurface": "#1E2B23",
+    "outline": "#9C948A",
+    "error": "#B3261E",
+    "success": "#1E7B4B",
+    "warning": "#C78B1B",
+    "info": "#2B5FC0"
+  },
+  "typography": {
+    "headingFont": "Merriweather",
+    "bodyFont": "Work Sans",
+    "scale": {
+      "displayLarge": [32, 40, 700],
+      "headlineLarge": [26, 34, 700],
+      "headlineMedium": [22, 30, 700],
+      "titleLarge": [18, 26, 600],
+      "titleMedium": [16, 24, 600],
+      "bodyLarge": [16, 24, 400],
+      "bodyMedium": [14, 22, 400],
+      "labelLarge": [13, 18, 600],
+      "labelSmall": [11, 16, 600]
+    }
+  },
+  "spacing": {
+    "base": 8,
+    "scale": [4, 8, 12, 16, 20, 24, 32, 40, 48]
+  },
+  "radii": {
+    "input": 16,
+    "card": 20,
+    "chip": 12,
+    "button": 16
+  },
+  "breakpoints": {
+    "mobile": [0, 599],
+    "tablet": [600, 899],
+    "desktop": [900, 1199],
+    "wide": [1200, 9999]
+  }
+}

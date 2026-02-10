@@ -72,7 +72,7 @@ glossary_terms = [
     },
     {
         "term": "Market Cap",
-        "definition": "Total market value of a company’s outstanding shares.",
+        "definition": "Total market value of a company's outstanding shares.",
     },
     {
         "term": "Volatility",
