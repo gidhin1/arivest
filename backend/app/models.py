@@ -65,6 +65,14 @@ class GlossaryTermModel(Base):
     definition = Column(Text, nullable=False)
 
 
+class PolicyModel(Base):
+    __tablename__ = "policy_configs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    version = Column(Integer, nullable=False)
+    statement = Column(Text, nullable=False)
+
+
 class DataSource(Base):
     __tablename__ = "data_sources"
 

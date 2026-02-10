@@ -4,6 +4,10 @@
     "note": "Sample values for UI development only.",
     "as_of": "2026-02-10"
   },
+  "policy": {
+    "version": 1,
+    "statement": "Arivest analyzes and reports only on past activities using credible, verifiable sources. We do not provide future predictions or speculative forecasts. The future is in the customer's hands."
+  },
   "sources": [
     {
       "name": "AMFI NAVAll",

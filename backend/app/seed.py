@@ -16,6 +16,7 @@ from .models import (
     ModelPortfolioModel,
     PortfolioAllocation,
     GlossaryTermModel,
+    PolicyModel,
 )
 
 SEED_PATH = Path(__file__).with_name("seed_data.json")
@@ -38,10 +39,37 @@ def seed_meta() -> dict:
     }
 
 
+def policy_config() -> dict:
+    payload = load_seed_payload()
+    policy = payload.get("policy", {})
+    return {
+        "version": int(policy.get("version", 1)),
+        "statement": policy.get(
+            "statement",
+            "Arivest analyzes and reports only on past activities using credible, "
+            "verifiable sources. We do not provide future predictions or speculative "
+            "forecasts. The future is in the customer's hands.",
+        ),
+    }
+
+
 def seed_demo_data() -> None:
     payload = load_seed_payload()
     db = SessionLocal()
     try:
+        policy = policy_config()
+        existing_policy = db.query(PolicyModel).first()
+        if existing_policy is None:
+            db.add(
+                PolicyModel(
+                    version=policy["version"],
+                    statement=policy["statement"],
+                )
+            )
+        else:
+            existing_policy.version = policy["version"]
+            existing_policy.statement = policy["statement"]
+
         sources_by_name: dict[str, DataSource] = {}
         for source in payload.get("sources", []):
             existing = db.query(DataSource).filter_by(name=source["name"]).first()

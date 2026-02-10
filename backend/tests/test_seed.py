@@ -16,6 +16,7 @@ from app.models import (
     ModelPortfolioModel,
     PortfolioAllocation,
     GlossaryTermModel,
+    PolicyModel,
 )
 from app.seed import seed_demo_data
 
@@ -34,6 +35,7 @@ def test_seed_idempotent():
             "model_portfolios": db.query(ModelPortfolioModel).count(),
             "portfolio_allocations": db.query(PortfolioAllocation).count(),
             "glossary_terms": db.query(GlossaryTermModel).count(),
+            "policy_configs": db.query(PolicyModel).count(),
         }
 
     seed_demo_data()
@@ -48,6 +50,7 @@ def test_seed_idempotent():
             "model_portfolios": db.query(ModelPortfolioModel).count(),
             "portfolio_allocations": db.query(PortfolioAllocation).count(),
             "glossary_terms": db.query(GlossaryTermModel).count(),
+            "policy_configs": db.query(PolicyModel).count(),
         }
 
     assert counts_before == counts_after
