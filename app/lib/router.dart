@@ -8,6 +8,8 @@ import 'screens/onboarding_screen.dart';
 import 'screens/portfolios_screen.dart';
 import 'screens/profile_screen.dart';
 import 'screens/responsive_preview_screen.dart';
+import 'screens/search_screen.dart';
+import 'screens/asset_detail_screen.dart';
 import 'widgets/gradient_background.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
@@ -35,6 +37,24 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               key: state.pageKey,
               child: const HomeScreen(),
             ),
+          ),
+          GoRoute(
+            path: '/search',
+            pageBuilder: (context, state) => _enterPage(
+              key: state.pageKey,
+              child: const SearchScreen(),
+            ),
+            routes: [
+              GoRoute(
+                path: ':assetId',
+                pageBuilder: (context, state) => _enterPage(
+                  key: state.pageKey,
+                  child: AssetDetailScreen(
+                    assetId: state.pathParameters['assetId'] ?? '',
+                  ),
+                ),
+              ),
+            ],
           ),
           GoRoute(
             path: '/portfolios',
@@ -107,19 +127,22 @@ class AppShell extends StatelessWidget {
   final Widget child;
 
   int _locationToIndex(String location) {
-    if (location.startsWith('/portfolios')) return 1;
-    if (location.startsWith('/glossary')) return 2;
-    if (location.startsWith('/profile')) return 3;
+    if (location.startsWith('/search')) return 1;
+    if (location.startsWith('/portfolios')) return 2;
+    if (location.startsWith('/glossary')) return 3;
+    if (location.startsWith('/profile')) return 4;
     return 0;
   }
 
   String _indexToLocation(int index) {
     switch (index) {
       case 1:
-        return '/portfolios';
+        return '/search';
       case 2:
-        return '/glossary';
+        return '/portfolios';
       case 3:
+        return '/glossary';
+      case 4:
         return '/profile';
       default:
         return '/home';
@@ -149,6 +172,11 @@ class AppShell extends StatelessWidget {
             icon: Icon(Icons.insights_outlined),
             selectedIcon: Icon(Icons.insights),
             label: 'Home',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.search_outlined),
+            selectedIcon: Icon(Icons.search),
+            label: 'Search',
           ),
           NavigationDestination(
             icon: Icon(Icons.auto_graph_outlined),

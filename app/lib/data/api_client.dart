@@ -59,4 +59,31 @@ class ApiClient {
     final data = jsonDecode(response.body) as Map<String, dynamic>;
     return RiskProfileResponse.fromJson(data);
   }
+
+  Future<SearchResponse> searchAssets({
+    String query = '',
+    String assetType = 'all',
+  }) async {
+    final uri = Uri.parse('$_baseUrl/search/assets').replace(
+      queryParameters: {
+        'query': query,
+        'asset_type': assetType,
+      },
+    );
+    final response = await _client.get(uri);
+    if (response.statusCode != 200) {
+      throw Exception('Failed to search assets');
+    }
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    return SearchResponse.fromJson(data);
+  }
+
+  Future<AssetDetailResponse> fetchAssetDetail(String assetId) async {
+    final response = await _client.get(Uri.parse('$_baseUrl/assets/$assetId'));
+    if (response.statusCode != 200) {
+      throw Exception('Failed to load asset detail');
+    }
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    return AssetDetailResponse.fromJson(data);
+  }
 }

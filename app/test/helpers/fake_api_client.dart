@@ -8,13 +8,19 @@ class FakeApiClient extends ApiClient {
     List<ResearchItem>? researchFeed,
     List<ModelPortfolio>? portfolios,
     List<GlossaryTerm>? glossary,
+    SearchResponse? searchResponse,
+    AssetDetailResponse? assetDetailResponse,
   })  : _researchFeed = researchFeed ?? sampleResearchFeed,
         _portfolios = portfolios ?? samplePortfolios,
-        _glossary = glossary ?? sampleGlossary;
+        _glossary = glossary ?? sampleGlossary,
+        _searchResponse = searchResponse ?? sampleSearchResponse,
+        _assetDetailResponse = assetDetailResponse ?? sampleAssetDetailResponse;
 
   final List<ResearchItem> _researchFeed;
   final List<ModelPortfolio> _portfolios;
   final List<GlossaryTerm> _glossary;
+  final SearchResponse _searchResponse;
+  final AssetDetailResponse _assetDetailResponse;
 
   @override
   Future<List<ResearchItem>> fetchResearchFeed() async {
@@ -40,5 +46,18 @@ class FakeApiClient extends ApiClient {
       monthlyInvestment: input.monthlyInvestment,
       createdAt: DateTime(2026, 2, 10),
     );
+  }
+
+  @override
+  Future<SearchResponse> searchAssets({
+    String query = '',
+    String assetType = 'all',
+  }) async {
+    return _searchResponse;
+  }
+
+  @override
+  Future<AssetDetailResponse> fetchAssetDetail(String assetId) async {
+    return _assetDetailResponse;
   }
 }
