@@ -20,9 +20,9 @@ class PolicyNotice extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: colors.secondary.withOpacity(0.12),
+        color: colors.secondary.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: colors.secondary.withOpacity(0.2)),
+        border: Border.all(color: colors.secondary.withValues(alpha: 0.2)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,7 +47,7 @@ class PolicyNotice extends StatelessWidget {
                 Text(
                   message,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: colors.onSurface.withOpacity(0.75),
+                        color: colors.onSurface.withValues(alpha: 0.75),
                       ),
                 ),
               ],

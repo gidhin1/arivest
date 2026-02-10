@@ -28,7 +28,7 @@ class PortfoliosScreen extends ConsumerWidget {
                   color: Theme.of(context)
                       .colorScheme
                       .onSurface
-                      .withOpacity(0.7),
+                      .withValues(alpha: 0.7),
                 ),
           ),
           const SizedBox(height: 16),
@@ -66,7 +66,7 @@ class PortfoliosScreen extends ConsumerWidget {
                                       color: Theme.of(context)
                                           .colorScheme
                                           .secondary
-                                          .withOpacity(0.15),
+                                          .withValues(alpha: 0.15),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: Text(
@@ -111,7 +111,7 @@ class PortfoliosScreen extends ConsumerWidget {
                                       color: Theme.of(context)
                                           .colorScheme
                                           .onSurface
-                                          .withOpacity(0.7),
+                                          .withValues(alpha: 0.7),
                                     ),
                               ),
                               const SizedBox(height: 16),
@@ -146,7 +146,7 @@ class PortfoliosScreen extends ConsumerWidget {
                                               backgroundColor: Theme.of(context)
                                                   .colorScheme
                                                   .surface
-                                                  .withOpacity(0.6),
+                                                  .withValues(alpha: 0.6),
                                               color: Theme.of(context).colorScheme.primary,
                                             ),
                                           ],
@@ -165,7 +165,7 @@ class PortfoliosScreen extends ConsumerWidget {
                                       color: Theme.of(context)
                                           .colorScheme
                                           .onSurface
-                                          .withOpacity(0.6),
+                                          .withValues(alpha: 0.6),
                                     ),
                               ),
                             ],

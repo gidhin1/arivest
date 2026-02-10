@@ -114,7 +114,7 @@ class _AssetDetailScreenState extends ConsumerState<AssetDetailScreen> {
                               color: Theme.of(context)
                                   .colorScheme
                                   .onSurface
-                                  .withOpacity(0.6),
+                                  .withValues(alpha: 0.6),
                             ),
                       ),
                     ],
@@ -129,7 +129,7 @@ class _AssetDetailScreenState extends ConsumerState<AssetDetailScreen> {
                         color: Theme.of(context)
                             .colorScheme
                             .onSurface
-                            .withOpacity(0.65),
+                            .withValues(alpha: 0.65),
                       ),
                 ),
               ],

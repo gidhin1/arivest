@@ -7,8 +7,10 @@ class ArivestTheme {
     final tokens = DesignSystem.tokens;
     final colors = tokens.colors;
 
-    final colorScheme = ColorScheme(
+    final colorScheme = ColorScheme.fromSeed(
+      seedColor: colors.primary,
       brightness: Brightness.light,
+    ).copyWith(
       primary: colors.primary,
       onPrimary: Colors.white,
       secondary: colors.secondary,
@@ -17,8 +19,6 @@ class ArivestTheme {
       onError: Colors.white,
       surface: colors.surface,
       onSurface: colors.onSurface,
-      background: colors.background,
-      onBackground: colors.onSurface,
       outline: colors.outline,
     );
 
@@ -60,11 +60,11 @@ class ArivestTheme {
         fillColor: Colors.white,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(tokens.radii.input),
-          borderSide: BorderSide(color: colors.outline.withOpacity(0.3)),
+          borderSide: BorderSide(color: colors.outline.withValues(alpha: 0.3)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(tokens.radii.input),
-          borderSide: BorderSide(color: colors.outline.withOpacity(0.3)),
+          borderSide: BorderSide(color: colors.outline.withValues(alpha: 0.3)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(tokens.radii.input),
@@ -81,12 +81,12 @@ class ArivestTheme {
       ),
       chipTheme: ChipThemeData(
         backgroundColor: colors.surface,
-        side: BorderSide(color: colors.outline.withOpacity(0.2)),
+        side: BorderSide(color: colors.outline.withValues(alpha: 0.2)),
         labelStyle: baseText.labelLarge?.copyWith(color: colors.onSurface),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       ),
       dividerTheme: DividerThemeData(
-        color: colors.outline.withOpacity(0.2),
+        color: colors.outline.withValues(alpha: 0.2),
       ),
     );
   }

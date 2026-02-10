@@ -27,6 +27,11 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Search & research'), findsOneWidget);
+
+    await tester.enterText(find.byType(TextField), 'Rel');
+    await tester.tap(find.byIcon(Icons.arrow_forward));
+    await tester.pumpAndSettle();
+
     expect(find.text(sampleSearchResponse.items.first.name), findsOneWidget);
     expect(find.text('Stocks'), findsOneWidget);
   });

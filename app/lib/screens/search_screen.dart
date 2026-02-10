@@ -27,7 +27,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   void initState() {
     super.initState();
     _controller = TextEditingController();
-    _future = _runSearch(query: '');
+    _future = null;
   }
 
   @override
@@ -53,7 +53,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     setState(() {
       _selectedFilter = 'all';
       _showShortQueryHint = false;
-      _future = _runSearch(query: '');
+      _future = null;
     });
   }
 
@@ -62,9 +62,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final isTooShort = query.isNotEmpty && query.length < _minQueryLength;
     setState(() {
       _showShortQueryHint = isTooShort;
-      if (!isTooShort) {
-        _future = _runSearch(query: query);
-      }
+      _future = isTooShort ? null : _runSearch(query: query);
     });
   }
 
@@ -121,7 +119,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                               color: Theme.of(context)
                                   .colorScheme
                                   .onSurface
-                                  .withOpacity(0.65),
+                                  .withValues(alpha: 0.65),
                             ),
                       ),
                     ),
@@ -153,6 +151,20 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             ),
           ),
           const SizedBox(height: 20),
+          if (_future == null)
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                'Start typing to search for stocks and plans.',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withValues(alpha: 0.7),
+                    ),
+              ),
+            )
+          else
           FutureBuilder<SearchResponse>(
             future: _future,
             builder: (context, snapshot) {
@@ -240,7 +252,7 @@ class _SearchMetaBanner extends StatelessWidget {
     final date = meta.asOf;
     final dateText = '${date.day}/${date.month}/${date.year}';
     return Card(
-      color: Theme.of(context).colorScheme.surface.withOpacity(0.9),
+      color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.9),
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Wrap(
@@ -258,7 +270,7 @@ class _SearchMetaBanner extends StatelessWidget {
                       color: Theme.of(context)
                           .colorScheme
                           .onSurface
-                          .withOpacity(0.7),
+                          .withValues(alpha: 0.7),
                     ),
               ),
           ],
@@ -308,7 +320,7 @@ class _AssetResultCard extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurface.withOpacity(0.6),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               );
               final valueBlock = Column(
@@ -318,7 +330,7 @@ class _AssetResultCard extends StatelessWidget {
                   Text(
                     item.valueLabel,
                     style: theme.textTheme.labelSmall?.copyWith(
-                      color: theme.colorScheme.onSurface.withOpacity(0.6),
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                     ),
                   ),
                   Text(
