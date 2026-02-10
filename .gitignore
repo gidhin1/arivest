@@ -1,0 +1,25 @@
+# macOS
+.DS_Store
+
+# Environment files
+.env
+.env.*
+
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.db
+.venv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+# Flutter/Dart
+.dart_tool/
+.build/
+build/
+
+# Editors
+.idea/
+.vscode/
