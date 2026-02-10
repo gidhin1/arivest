@@ -14,6 +14,7 @@ from .models import (
     ModelPortfolioModel,
     PortfolioAllocation,
     GlossaryTermModel,
+    PolicyModel,
     Asset,
     AssetListing,
     AssetSnapshot,
@@ -31,8 +32,7 @@ from .schemas import (
     SearchResponse,
     AssetDetailResponse,
 )
-from .seed import seed_demo_data, seed_meta
-from .policy import POLICY_STATEMENT, POLICY_VERSION
+from .seed import seed_demo_data, seed_meta, policy_config
 
 
 @asynccontextmanager
@@ -64,8 +64,12 @@ def health():
 
 
 @app.get("/policy")
-def get_policy():
-    return {"version": POLICY_VERSION, "statement": POLICY_STATEMENT}
+def get_policy(db: Session = Depends(get_session)):
+    policy = db.query(PolicyModel).first()
+    if policy is None:
+        policy_data = policy_config()
+        return {"version": policy_data["version"], "statement": policy_data["statement"]}
+    return {"version": policy.version, "statement": policy.statement}
 
 
 def _parse_tags(raw: Optional[str]) -> list[str]:
