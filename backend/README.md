@@ -6,6 +6,10 @@
 3. `pip install -r requirements.txt`
 4. `uvicorn app.main:app --reload`
 
+## Tests
+1. `pip install -r requirements-dev.txt`
+2. `pytest`
+
 ## Endpoints
 - `GET /health`
 - `GET /research/feed`
