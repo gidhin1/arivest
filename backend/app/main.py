@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -7,10 +9,18 @@ from .models import RiskProfile
 from .schemas import RiskProfileIn, RiskProfileOut, ResearchItem, ModelPortfolio, GlossaryTerm
 from .data import research_feed, model_portfolios, glossary_terms
 
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    init_db()
+    yield
+
+
 app = FastAPI(
     title="Arivest API",
     version="0.1.0",
     description="Education and research endpoints for the Arivest app.",
+    lifespan=lifespan,
 )
 
 app.add_middleware(
@@ -20,11 +30,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.on_event("startup")
-def on_startup() -> None:
-    init_db()
 
 
 @app.get("/health")
