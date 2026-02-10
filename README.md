@@ -26,6 +26,6 @@ To override the API URL:
 - SQLite is used for the MVP. Postgres can be added later.
 
 ## Database access (UI tools)
-You can open the SQLite database at `/Users/gidhin1/Documents/arivest/backend/arivest.db` using a GUI:
+You can open the SQLite database at `backend/arivest.db` using a GUI:
 - [DB Browser for SQLite](https://sqlitebrowser.org/)
 - [DBeaver](https://dbeaver.io/)

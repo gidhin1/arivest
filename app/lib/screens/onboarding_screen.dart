@@ -120,10 +120,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 Text(
                   'Tell us your comfort level and goals. We curate past-only research and model portfolios to match your learning pace.',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withOpacity(0.7),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withValues(alpha: 0.7),
                       ),
                 ),
                 const SizedBox(height: 16),
@@ -197,10 +197,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           Text(
                             'Education and research only. Not investment advice.',
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurface
-                                      .withOpacity(0.6),
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface
+                                          .withValues(alpha: 0.6),
                                 ),
                           ),
                         ],

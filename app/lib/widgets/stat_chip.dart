@@ -17,7 +17,7 @@ class StatChip extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(tokens.radii.chip),
-        border: Border.all(color: theme.colorScheme.outline.withOpacity(0.2)),
+        border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,7 +27,7 @@ class StatChip extends StatelessWidget {
             style: theme.textTheme.labelSmall?.copyWith(
               letterSpacing: 1.1,
               fontWeight: FontWeight.w600,
-              color: theme.colorScheme.onSurface.withOpacity(0.6),
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
             ),
           ),
           const SizedBox(height: 4),

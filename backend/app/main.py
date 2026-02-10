@@ -1,4 +1,5 @@
 import json
+import os
 from typing import Optional
 from contextlib import asynccontextmanager
 
@@ -49,10 +50,24 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+allowed_origins_raw = os.getenv("ARIVEST_ALLOWED_ORIGINS", "")
+allowed_origins = [
+    origin.strip()
+    for origin in allowed_origins_raw.split(",")
+    if origin.strip()
+]
+allow_origin_regex = (
+    None
+    if allowed_origins
+    else r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$"
+)
+allow_credentials = os.getenv("ARIVEST_ALLOW_CREDENTIALS", "0") == "1"
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=allowed_origins,
+    allow_origin_regex=allow_origin_regex,
+    allow_credentials=allow_credentials,
     allow_methods=["*"],
     allow_headers=["*"],
 )

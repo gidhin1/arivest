@@ -30,7 +30,7 @@ class GradientBackground extends StatelessWidget {
             right: -40,
             child: _SoftCircle(
               size: 180,
-              color: colors.primary.withOpacity(0.08),
+              color: colors.primary.withValues(alpha: 0.08),
             ),
           ),
           Positioned(
@@ -38,7 +38,7 @@ class GradientBackground extends StatelessWidget {
             left: -70,
             child: _SoftCircle(
               size: 200,
-              color: colors.secondary.withOpacity(0.08),
+              color: colors.secondary.withValues(alpha: 0.08),
             ),
           ),
           Positioned(
@@ -46,7 +46,7 @@ class GradientBackground extends StatelessWidget {
             right: 40,
             child: _SoftCircle(
               size: 220,
-              color: colors.onSurface.withOpacity(0.06),
+              color: colors.onSurface.withValues(alpha: 0.06),
             ),
           ),
           Positioned.fill(

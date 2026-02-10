@@ -106,7 +106,7 @@ CustomTransitionPage<void> _enterPage({
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
       return ColoredBox(
-        color: Theme.of(context).colorScheme.background,
+        color: Theme.of(context).colorScheme.surface,
         child: SlideTransition(
           position: Tween<Offset>(begin: beginOffset, end: Offset.zero)
               .animate(curvedAnimation),

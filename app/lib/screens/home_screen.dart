@@ -46,7 +46,7 @@ class HomeScreen extends ConsumerWidget {
                               color: Theme.of(context)
                                   .colorScheme
                                   .onSurface
-                                  .withOpacity(0.7),
+                                  .withValues(alpha: 0.7),
                             ),
                       ),
                       const SizedBox(height: 16),
@@ -136,7 +136,7 @@ class HomeScreen extends ConsumerWidget {
                                           color: Theme.of(context)
                                               .colorScheme
                                               .onSurface
-                                              .withOpacity(0.6),
+                                              .withValues(alpha: 0.6),
                                         ),
                                   );
 
@@ -167,7 +167,7 @@ class HomeScreen extends ConsumerWidget {
                                       color: Theme.of(context)
                                           .colorScheme
                                           .onSurface
-                                          .withOpacity(0.7),
+                                          .withValues(alpha: 0.7),
                                     ),
                               ),
                               const SizedBox(height: 12),

@@ -10,6 +10,12 @@ String apiBaseUrl() {
     return apiBaseOverride;
   }
 
+  if (kReleaseMode) {
+    throw StateError(
+      'ARIVEST_API_BASE_URL must be set for release builds using HTTPS.',
+    );
+  }
+
   if (kIsWeb) {
     return 'http://localhost:8000';
   }
