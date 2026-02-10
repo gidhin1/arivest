@@ -22,6 +22,27 @@ def init_db() -> None:
 
     Base.metadata.create_all(bind=engine)
 
+    if engine.dialect.name != "sqlite":
+        return
+
+    with engine.connect() as connection:
+        result = connection.exec_driver_sql("PRAGMA table_info(assets)").fetchall()
+        if not result:
+            return
+        columns = {row[1] for row in result}
+        if "slug" in columns:
+            return
+
+    if os.getenv("ARIVEST_RESET_DB") == "1":
+        Base.metadata.drop_all(bind=engine)
+        Base.metadata.create_all(bind=engine)
+        return
+
+    raise RuntimeError(
+        "Database schema is outdated. Delete backend/arivest.db or set "
+        "ARIVEST_RESET_DB=1 and restart the API."
+    )
+
 
 def get_session():
     db = SessionLocal()
