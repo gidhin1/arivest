@@ -7,6 +7,7 @@ import 'screens/home_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/portfolios_screen.dart';
 import 'screens/profile_screen.dart';
+import 'screens/responsive_preview_screen.dart';
 import 'widgets/gradient_background.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
@@ -15,7 +16,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     routes: [
       GoRoute(
         path: '/onboarding',
-        builder: (context, state) => const OnboardingScreen(),
+        pageBuilder: (context, state) => _enterPage(
+          key: state.pageKey,
+          child: const OnboardingScreen(),
+        ),
       ),
       ShellRoute(
         builder: (context, state, child) {
@@ -27,25 +31,74 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         routes: [
           GoRoute(
             path: '/home',
-            builder: (context, state) => const HomeScreen(),
+            pageBuilder: (context, state) => _enterPage(
+              key: state.pageKey,
+              child: const HomeScreen(),
+            ),
           ),
           GoRoute(
             path: '/portfolios',
-            builder: (context, state) => const PortfoliosScreen(),
+            pageBuilder: (context, state) => _enterPage(
+              key: state.pageKey,
+              child: const PortfoliosScreen(),
+            ),
           ),
           GoRoute(
             path: '/glossary',
-            builder: (context, state) => const GlossaryScreen(),
+            pageBuilder: (context, state) => _enterPage(
+              key: state.pageKey,
+              child: const GlossaryScreen(),
+            ),
           ),
           GoRoute(
             path: '/profile',
-            builder: (context, state) => const ProfileScreen(),
+            pageBuilder: (context, state) => _enterPage(
+              key: state.pageKey,
+              child: const ProfileScreen(),
+            ),
+          ),
+          GoRoute(
+            path: '/preview',
+            pageBuilder: (context, state) => _enterPage(
+              key: state.pageKey,
+              child: const ResponsivePreviewScreen(),
+            ),
           ),
         ],
       ),
     ],
   );
 });
+
+CustomTransitionPage<void> _enterPage({
+  required LocalKey key,
+  required Widget child,
+}) {
+  const beginOffset = Offset(0, 0.035);
+  const curve = Curves.easeOutCubic;
+
+  return CustomTransitionPage<void>(
+    key: key,
+    opaque: true,
+    transitionDuration: const Duration(milliseconds: 220),
+    reverseTransitionDuration: const Duration(milliseconds: 160),
+    child: child,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+      return ColoredBox(
+        color: Theme.of(context).colorScheme.background,
+        child: SlideTransition(
+          position: Tween<Offset>(begin: beginOffset, end: Offset.zero)
+              .animate(curvedAnimation),
+          child: FadeTransition(
+            opacity: curvedAnimation,
+            child: child,
+          ),
+        ),
+      );
+    },
+  );
+}
 
 class AppShell extends StatelessWidget {
   const AppShell({super.key, required this.location, required this.child});

@@ -1,37 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+
+import 'design_system.dart';
 
 class ArivestTheme {
-  static const _primary = Color(0xFF0F6C5C);
-  static const _secondary = Color(0xFFC0762B);
-  static const _surface = Color(0xFFF7F3EC);
-  static const _background = Color(0xFFF4F1EA);
-  static const _onSurface = Color(0xFF1E2B23);
-  static const _outline = Color(0xFF9C948A);
-
   static ThemeData light() {
+    final tokens = DesignSystem.tokens;
+    final colors = tokens.colors;
+
     final colorScheme = ColorScheme(
       brightness: Brightness.light,
-      primary: _primary,
+      primary: colors.primary,
       onPrimary: Colors.white,
-      secondary: _secondary,
+      secondary: colors.secondary,
       onSecondary: Colors.white,
-      error: const Color(0xFFB3261E),
+      error: colors.error,
       onError: Colors.white,
-      surface: _surface,
-      onSurface: _onSurface,
-      background: _background,
-      onBackground: _onSurface,
-      outline: _outline,
+      surface: colors.surface,
+      onSurface: colors.onSurface,
+      background: colors.background,
+      onBackground: colors.onSurface,
+      outline: colors.outline,
     );
 
-    final baseText = GoogleFonts.workSansTextTheme();
-    final headingText = GoogleFonts.merriweatherTextTheme();
+    final baseText = DesignSystem.bodyTextTheme();
+    final headingText = DesignSystem.headingTextTheme();
 
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
-      scaffoldBackgroundColor: _background,
+      scaffoldBackgroundColor: colors.background,
       textTheme: baseText.copyWith(
         displayLarge: headingText.displayLarge,
         displayMedium: headingText.displayMedium,
@@ -42,19 +39,19 @@ class ArivestTheme {
         titleLarge: headingText.titleLarge,
       ),
       appBarTheme: AppBarTheme(
-        backgroundColor: _background,
+        backgroundColor: colors.background,
         elevation: 0,
         centerTitle: false,
         titleTextStyle: headingText.titleLarge?.copyWith(
-          color: _onSurface,
+          color: colors.onSurface,
           fontWeight: FontWeight.w700,
         ),
       ),
       cardTheme: CardThemeData(
-        color: _surface,
+        color: colors.surface,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(tokens.radii.card),
         ),
         margin: const EdgeInsets.symmetric(vertical: 8),
       ),
@@ -62,32 +59,34 @@ class ArivestTheme {
         filled: true,
         fillColor: Colors.white,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: _outline.withOpacity(0.3)),
+          borderRadius: BorderRadius.circular(tokens.radii.input),
+          borderSide: BorderSide(color: colors.outline.withOpacity(0.3)),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: _outline.withOpacity(0.3)),
+          borderRadius: BorderRadius.circular(tokens.radii.input),
+          borderSide: BorderSide(color: colors.outline.withOpacity(0.3)),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: _primary, width: 1.5),
+          borderRadius: BorderRadius.circular(tokens.radii.input),
+          borderSide: BorderSide(color: colors.primary, width: 1.5),
         ),
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(tokens.radii.button),
+          ),
         ),
       ),
       chipTheme: ChipThemeData(
-        backgroundColor: _surface,
-        side: BorderSide(color: _outline.withOpacity(0.2)),
-        labelStyle: baseText.labelLarge?.copyWith(color: _onSurface),
+        backgroundColor: colors.surface,
+        side: BorderSide(color: colors.outline.withOpacity(0.2)),
+        labelStyle: baseText.labelLarge?.copyWith(color: colors.onSurface),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       ),
       dividerTheme: DividerThemeData(
-        color: _outline.withOpacity(0.2),
+        color: colors.outline.withOpacity(0.2),
       ),
     );
   }

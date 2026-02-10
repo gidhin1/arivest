@@ -14,6 +14,7 @@ void main() {
     );
 
     expect(find.text('Education-only commitment'), findsOneWidget);
+    expect(find.text('Research policy'), findsOneWidget);
     expect(find.text('Preferences'), findsOneWidget);
   });
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'router.dart';
+import 'scroll_behavior.dart';
 import 'theme.dart';
 
 class ArivestApp extends ConsumerWidget {
@@ -14,6 +15,7 @@ class ArivestApp extends ConsumerWidget {
     return MaterialApp.router(
       title: 'Arivest',
       theme: ArivestTheme.light(),
+      scrollBehavior: const ArivestScrollBehavior(),
       routerConfig: router,
       debugShowCheckedModeBanner: false,
     );

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../design_system.dart';
+
 class StatChip extends StatelessWidget {
   const StatChip({super.key, required this.label, required this.value});
 
@@ -9,11 +11,12 @@ class StatChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final tokens = DesignSystem.tokens;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(tokens.radii.chip),
         border: Border.all(color: theme.colorScheme.outline.withOpacity(0.2)),
       ),
       child: Column(
