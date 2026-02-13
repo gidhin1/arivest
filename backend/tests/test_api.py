@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import uuid
 
 import pytest
 from fastapi.testclient import TestClient
@@ -46,6 +47,25 @@ def test_research_feed(client):
     assert "tags" in sample
     assert isinstance(sample["tags"], list)
     assert "published_at" in sample
+    assert "source_name" in sample
+    assert "match_reasons" in sample
+
+
+def test_research_feed_personalized_order(client):
+    response = client.get(
+        "/research/feed",
+        params={
+            "appetite": "moderate",
+            "experience_level": "beginner",
+            "primary_goal": "wealth_creation",
+            "preferred_sectors": "technology,banking",
+        },
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert data
+    assert data[0]["match_score"] >= data[-1]["match_score"]
+    assert isinstance(data[0]["match_reasons"], list)
 
 
 def test_model_portfolios(client):
@@ -70,6 +90,13 @@ def test_glossary(client):
     sample = data[0]
     assert "term" in sample
     assert "definition" in sample
+    assert "why_it_matters" in sample
+    assert "example" in sample
+    assert "risk_note" in sample
+    assert "related_terms" in sample
+    assert isinstance(sample["related_terms"], list)
+    assert "source_name" in sample
+    assert "source_url" in sample
 
 
 def test_search_assets(client):
@@ -131,6 +158,11 @@ def test_create_risk_profile(client):
         "appetite": "moderate",
         "horizon_years": 5,
         "monthly_investment": 10000,
+        "experience_level": "beginner",
+        "primary_goal": "wealth_creation",
+        "age_group": "26-35",
+        "preferred_sectors": ["technology", "banking"],
+        "weekly_learning_minutes": 90,
     }
     response = client.post("/risk-profile", json=payload)
     assert response.status_code == 200
@@ -138,6 +170,11 @@ def test_create_risk_profile(client):
     assert data["appetite"] == "moderate"
     assert data["horizon_years"] == 5
     assert data["monthly_investment"] == 10000
+    assert data["experience_level"] == "beginner"
+    assert data["primary_goal"] == "wealth_creation"
+    assert data["age_group"] == "26-35"
+    assert data["preferred_sectors"] == ["technology", "banking"]
+    assert data["weekly_learning_minutes"] == 90
     assert "id" in data
     assert "created_at" in data
 
@@ -149,3 +186,75 @@ def test_risk_profile_validation(client):
     }
     response = client.post("/risk-profile", json=payload)
     assert response.status_code == 422
+
+
+def _unique_email() -> str:
+    return f"user-{uuid.uuid4().hex[:10]}@arivest.test"
+
+
+def test_auth_register_session_logout_login_flow(client):
+    email = _unique_email()
+    register_payload = {
+        "email": email,
+        "password": "StrongPass123",
+        "display_name": "Test User",
+    }
+    register_response = client.post("/auth/register", json=register_payload)
+    assert register_response.status_code == 201
+    register_data = register_response.json()
+    assert register_data["user"]["email"] == email
+    assert register_data["user"]["display_name"] == "Test User"
+    assert register_data["session_token"]
+    assert register_data["expires_at"]
+
+    token = register_data["session_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    session_response = client.get("/auth/session", headers=headers)
+    assert session_response.status_code == 200
+    session_data = session_response.json()
+    assert session_data["user"]["email"] == email
+    assert session_data["expires_at"]
+
+    logout_response = client.post("/auth/logout", headers=headers)
+    assert logout_response.status_code == 204
+
+    invalidated_session = client.get("/auth/session", headers=headers)
+    assert invalidated_session.status_code == 401
+
+    login_response = client.post(
+        "/auth/login",
+        json={"email": email, "password": "StrongPass123"},
+    )
+    assert login_response.status_code == 200
+    login_data = login_response.json()
+    assert login_data["session_token"] != token
+    assert login_data["user"]["email"] == email
+
+
+def test_auth_register_duplicate_email(client):
+    email = _unique_email()
+    payload = {
+        "email": email,
+        "password": "StrongPass123",
+        "display_name": "Test User",
+    }
+    first = client.post("/auth/register", json=payload)
+    assert first.status_code == 201
+
+    duplicate = client.post("/auth/register", json=payload)
+    assert duplicate.status_code == 409
+
+
+def test_auth_login_validation_and_invalid_credentials(client):
+    invalid_email_response = client.post(
+        "/auth/register",
+        json={"email": "invalid", "password": "StrongPass123"},
+    )
+    assert invalid_email_response.status_code == 422
+
+    login_response = client.post(
+        "/auth/login",
+        json={"email": _unique_email(), "password": "StrongPass123"},
+    )
+    assert login_response.status_code == 401

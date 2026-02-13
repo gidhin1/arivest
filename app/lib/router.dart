@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'screens/login_screen.dart';
 import 'screens/glossary_screen.dart';
+import 'screens/digest_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/portfolios_screen.dart';
@@ -10,40 +12,75 @@ import 'screens/profile_screen.dart';
 import 'screens/responsive_preview_screen.dart';
 import 'screens/search_screen.dart';
 import 'screens/asset_detail_screen.dart';
+import 'screens/splash_screen.dart';
+import 'state/providers.dart';
 import 'widgets/gradient_background.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
+  final authState = ref.watch(authControllerProvider);
+  final onboardingRequired = ref.watch(onboardingRequiredProvider);
+
   return GoRouter(
-    initialLocation: '/onboarding',
+    initialLocation: '/splash',
+    redirect: (context, state) {
+      final location = state.uri.path;
+      final isSplash = location == '/splash';
+      final isLogin = location == '/login';
+      final isOnboarding = location == '/onboarding';
+
+      if (authState.isLoading) {
+        return isSplash ? null : '/splash';
+      }
+
+      final isAuthenticated = authState.asData?.value != null;
+      if (!isAuthenticated) {
+        return isLogin ? null : '/login';
+      }
+
+      if (onboardingRequired && !isOnboarding) {
+        return '/onboarding';
+      }
+
+      if (isLogin || isSplash) {
+        return '/home';
+      }
+      return null;
+    },
     routes: [
       GoRoute(
+        path: '/splash',
+        pageBuilder: (context, state) =>
+            _enterPage(key: state.pageKey, child: const SplashScreen()),
+      ),
+      GoRoute(
+        path: '/login',
+        pageBuilder: (context, state) =>
+            _enterPage(key: state.pageKey, child: const LoginScreen()),
+      ),
+      GoRoute(
         path: '/onboarding',
-        pageBuilder: (context, state) => _enterPage(
-          key: state.pageKey,
-          child: const OnboardingScreen(),
-        ),
+        pageBuilder: (context, state) =>
+            _enterPage(key: state.pageKey, child: const OnboardingScreen()),
       ),
       ShellRoute(
         builder: (context, state, child) {
-          return AppShell(
-            location: state.uri.toString(),
-            child: child,
-          );
+          return AppShell(location: state.uri.toString(), child: child);
         },
         routes: [
           GoRoute(
             path: '/home',
-            pageBuilder: (context, state) => _enterPage(
-              key: state.pageKey,
-              child: const HomeScreen(),
-            ),
+            pageBuilder: (context, state) =>
+                _enterPage(key: state.pageKey, child: const HomeScreen()),
+          ),
+          GoRoute(
+            path: '/digest',
+            pageBuilder: (context, state) =>
+                _enterPage(key: state.pageKey, child: const DigestScreen()),
           ),
           GoRoute(
             path: '/search',
-            pageBuilder: (context, state) => _enterPage(
-              key: state.pageKey,
-              child: const SearchScreen(),
-            ),
+            pageBuilder: (context, state) =>
+                _enterPage(key: state.pageKey, child: const SearchScreen()),
             routes: [
               GoRoute(
                 path: ':assetId',
@@ -60,22 +97,20 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             path: '/portfolios',
             pageBuilder: (context, state) => _enterPage(
               key: state.pageKey,
-              child: const PortfoliosScreen(),
+              child: PortfoliosScreen(
+                riskFilter: state.uri.queryParameters['risk'],
+              ),
             ),
           ),
           GoRoute(
             path: '/glossary',
-            pageBuilder: (context, state) => _enterPage(
-              key: state.pageKey,
-              child: const GlossaryScreen(),
-            ),
+            pageBuilder: (context, state) =>
+                _enterPage(key: state.pageKey, child: const GlossaryScreen()),
           ),
           GoRoute(
             path: '/profile',
-            pageBuilder: (context, state) => _enterPage(
-              key: state.pageKey,
-              child: const ProfileScreen(),
-            ),
+            pageBuilder: (context, state) =>
+                _enterPage(key: state.pageKey, child: const ProfileScreen()),
           ),
           GoRoute(
             path: '/preview',
@@ -108,12 +143,11 @@ CustomTransitionPage<void> _enterPage({
       return ColoredBox(
         color: Theme.of(context).colorScheme.surface,
         child: SlideTransition(
-          position: Tween<Offset>(begin: beginOffset, end: Offset.zero)
-              .animate(curvedAnimation),
-          child: FadeTransition(
-            opacity: curvedAnimation,
-            child: child,
-          ),
+          position: Tween<Offset>(
+            begin: beginOffset,
+            end: Offset.zero,
+          ).animate(curvedAnimation),
+          child: FadeTransition(opacity: curvedAnimation, child: child),
         ),
       );
     },
@@ -154,11 +188,7 @@ class AppShell extends StatelessWidget {
     final selectedIndex = _locationToIndex(location);
 
     return Scaffold(
-      body: GradientBackground(
-        child: SafeArea(
-          child: child,
-        ),
-      ),
+      body: GradientBackground(child: SafeArea(child: child)),
       bottomNavigationBar: NavigationBar(
         selectedIndex: selectedIndex,
         onDestinationSelected: (index) {

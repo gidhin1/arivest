@@ -30,17 +30,123 @@ def init_db() -> None:
         if not result:
             return
         columns = {row[1] for row in result}
-        if "slug" in columns:
-            return
+        if "slug" not in columns:
+            if os.getenv("ARIVEST_RESET_DB") == "1":
+                Base.metadata.drop_all(bind=engine)
+                Base.metadata.create_all(bind=engine)
+                return
 
-    if os.getenv("ARIVEST_RESET_DB") == "1":
-        Base.metadata.drop_all(bind=engine)
-        Base.metadata.create_all(bind=engine)
+            raise RuntimeError(
+                "Database schema is outdated. Delete backend/arivest.db or set "
+                "ARIVEST_RESET_DB=1 and restart the API."
+            )
+
+        _ensure_sqlite_column(
+            connection,
+            table_name="risk_profiles",
+            column_name="experience_level",
+            sql_type="TEXT",
+        )
+        _ensure_sqlite_column(
+            connection,
+            table_name="risk_profiles",
+            column_name="primary_goal",
+            sql_type="TEXT",
+        )
+        _ensure_sqlite_column(
+            connection,
+            table_name="risk_profiles",
+            column_name="age_group",
+            sql_type="TEXT",
+        )
+        _ensure_sqlite_column(
+            connection,
+            table_name="risk_profiles",
+            column_name="preferred_sectors",
+            sql_type="TEXT",
+        )
+        _ensure_sqlite_column(
+            connection,
+            table_name="risk_profiles",
+            column_name="weekly_learning_minutes",
+            sql_type="INTEGER",
+        )
+        _ensure_sqlite_column(
+            connection,
+            table_name="research_items",
+            column_name="source_name",
+            sql_type="TEXT",
+        )
+        _ensure_sqlite_column(
+            connection,
+            table_name="research_items",
+            column_name="source_url",
+            sql_type="TEXT",
+        )
+        _ensure_sqlite_column(
+            connection,
+            table_name="research_items",
+            column_name="audience_levels",
+            sql_type="TEXT",
+        )
+        _ensure_sqlite_column(
+            connection,
+            table_name="research_items",
+            column_name="appetite_tags",
+            sql_type="TEXT",
+        )
+        _ensure_sqlite_column(
+            connection,
+            table_name="research_items",
+            column_name="goal_tags",
+            sql_type="TEXT",
+        )
+        _ensure_sqlite_column(
+            connection,
+            table_name="glossary_terms",
+            column_name="why_it_matters",
+            sql_type="TEXT",
+        )
+        _ensure_sqlite_column(
+            connection,
+            table_name="glossary_terms",
+            column_name="example",
+            sql_type="TEXT",
+        )
+        _ensure_sqlite_column(
+            connection,
+            table_name="glossary_terms",
+            column_name="risk_note",
+            sql_type="TEXT",
+        )
+        _ensure_sqlite_column(
+            connection,
+            table_name="glossary_terms",
+            column_name="related_terms",
+            sql_type="TEXT",
+        )
+        _ensure_sqlite_column(
+            connection,
+            table_name="glossary_terms",
+            column_name="source_name",
+            sql_type="TEXT",
+        )
+        _ensure_sqlite_column(
+            connection,
+            table_name="glossary_terms",
+            column_name="source_url",
+            sql_type="TEXT",
+        )
+        connection.commit()
+
+
+def _ensure_sqlite_column(connection, table_name: str, column_name: str, sql_type: str) -> None:
+    result = connection.exec_driver_sql(f"PRAGMA table_info({table_name})").fetchall()
+    existing_columns = {row[1] for row in result}
+    if column_name in existing_columns:
         return
-
-    raise RuntimeError(
-        "Database schema is outdated. Delete backend/arivest.db or set "
-        "ARIVEST_RESET_DB=1 and restart the API."
+    connection.exec_driver_sql(
+        f"ALTER TABLE {table_name} ADD COLUMN {column_name} {sql_type}"
     )
 
 

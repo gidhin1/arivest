@@ -1,7 +1,7 @@
 {
   "meta": {
     "mode": "demo",
-    "note": "Sample values for UI development only.",
+    "note": "Curated educational dataset from Indian public market/regulatory sources.",
     "as_of": "2026-02-10"
   },
   "policy": {
@@ -57,38 +57,343 @@
       "url": "https://irdai.gov.in/",
       "coverage": "Insurance",
       "note": "Reference for insurance plans."
+    },
+    {
+      "name": "NSE Milestones",
+      "kind": "reference",
+      "url": "https://www.nseindia.com/about/milestones",
+      "coverage": "NSE market milestones and investor growth",
+      "note": "Official exchange milestones and historic markers."
+    },
+    {
+      "name": "SEBI Circulars",
+      "kind": "reference",
+      "url": "https://www.sebi.gov.in/legal/circulars/",
+      "coverage": "Regulatory changes affecting Indian markets",
+      "note": "Primary source for compliance and disclosure changes."
+    },
+    {
+      "name": "RBI Annual Report",
+      "kind": "reference",
+      "url": "https://www.rbi.org.in/Scripts/AnnualReportPublications.aspx?Id=1369",
+      "coverage": "Macro and financial market developments",
+      "note": "Annual macro-financial assessment from RBI."
+    },
+    {
+      "name": "PIB Budget Releases",
+      "kind": "reference",
+      "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2007356",
+      "coverage": "Union Budget announcements",
+      "note": "Official government budget communication."
     }
   ],
   "research_feed": [
     {
       "id": "feed-001",
-      "title": "How to read a balance sheet (India)",
-      "summary": "A beginner-friendly guide to assets, liabilities, and what matters most for equity research.",
+      "title": "Reading balance sheets in Indian equities",
+      "summary": "A practical walkthrough of assets, liabilities, and cash quality to reduce beginner mistakes while studying listed companies.",
       "tags": [
         "basics",
-        "fundamentals"
+        "fundamentals",
+        "equity"
       ],
-      "published_at": "2026-02-01"
+      "published_at": "2026-02-01",
+      "source_name": "SEBI Circulars",
+      "source_url": "https://www.sebi.gov.in/legal/circulars/",
+      "audience_levels": [
+        "beginner",
+        "intermediate"
+      ],
+      "appetite_tags": [
+        "all"
+      ],
+      "goal_tags": [
+        "wealth_creation",
+        "capital_preservation"
+      ]
     },
     {
       "id": "feed-002",
-      "title": "Understanding sector cycles in Indian equities",
-      "summary": "Why sectors rotate, and how long-term investors can interpret these shifts without trading.",
+      "title": "What NSE milestones reveal about market depth",
+      "summary": "NSE milestones such as index levels, market-cap growth, and investor count are used as historical checkpoints for studying participation cycles.",
       "tags": [
-        "sectors",
+        "market-structure",
+        "nse",
         "cycles"
       ],
-      "published_at": "2026-02-03"
+      "published_at": "2025-01-20",
+      "source_name": "NSE Milestones",
+      "source_url": "https://www.nseindia.com/about/milestones",
+      "audience_levels": [
+        "beginner",
+        "intermediate"
+      ],
+      "appetite_tags": [
+        "all"
+      ],
+      "goal_tags": [
+        "wealth_creation",
+        "retirement"
+      ]
     },
     {
       "id": "feed-003",
-      "title": "Risk and return: what the numbers really mean",
-      "summary": "Volatility, drawdowns, and why risk appetite should match your horizon.",
+      "title": "SEBI mutual fund master circular: why it matters",
+      "summary": "The June 2024 master circular consolidates disclosure and process expectations; learners can map these rules to fund transparency practices.",
       "tags": [
-        "risk",
-        "basics"
+        "mutual-fund",
+        "regulation",
+        "sebi"
       ],
-      "published_at": "2026-02-06"
+      "published_at": "2024-06-27",
+      "source_name": "SEBI Circulars",
+      "source_url": "https://www.sebi.gov.in/legal/master-circulars/jun-2024/master-circular-for-mutual-funds_83277.html",
+      "audience_levels": [
+        "beginner",
+        "intermediate"
+      ],
+      "appetite_tags": [
+        "conservative",
+        "moderate",
+        "aggressive"
+      ],
+      "goal_tags": [
+        "retirement",
+        "income",
+        "wealth_creation"
+      ]
+    },
+    {
+      "id": "feed-004",
+      "title": "Risk-adjusted return disclosure in mutual funds (2025)",
+      "summary": "SEBI's 2025 disclosure update helps compare funds beyond raw returns by emphasizing risk-adjusted reporting in investor communication.",
+      "tags": [
+        "mutual-fund",
+        "risk",
+        "disclosure",
+        "sebi"
+      ],
+      "published_at": "2025-01-17",
+      "source_name": "SEBI Circulars",
+      "source_url": "https://www.sebi.gov.in/legal/circulars/jan-2025/disclosure-of-risk-adjusted-return-by-mutual-funds_89961.html",
+      "audience_levels": [
+        "intermediate",
+        "beginner"
+      ],
+      "appetite_tags": [
+        "conservative",
+        "moderate"
+      ],
+      "goal_tags": [
+        "capital_preservation",
+        "retirement",
+        "income"
+      ]
+    },
+    {
+      "id": "feed-005",
+      "title": "How the derivatives risk framework changed market behavior",
+      "summary": "SEBI's 2021 RMF for equity derivatives is a useful case study on leverage control, margin discipline, and systemic risk management.",
+      "tags": [
+        "derivatives",
+        "risk",
+        "sebi",
+        "market-structure"
+      ],
+      "published_at": "2021-09-27",
+      "source_name": "SEBI Circulars",
+      "source_url": "https://www.sebi.gov.in/legal/circulars/sep-2021/risk-management-framework-rmf-for-equity-derivatives-segment_52969.html",
+      "audience_levels": [
+        "intermediate"
+      ],
+      "appetite_tags": [
+        "moderate",
+        "aggressive"
+      ],
+      "goal_tags": [
+        "wealth_creation"
+      ]
+    },
+    {
+      "id": "feed-006",
+      "title": "RBI Annual Report 2024-25: rates, liquidity, and markets",
+      "summary": "The RBI annual report provides macro context for equity and debt learners by linking inflation, liquidity management, and financial conditions.",
+      "tags": [
+        "rbi",
+        "macro",
+        "rates",
+        "debt"
+      ],
+      "published_at": "2025-05-29",
+      "source_name": "RBI Annual Report",
+      "source_url": "https://www.rbi.org.in/Scripts/AnnualReportPublications.aspx?Id=1369",
+      "audience_levels": [
+        "beginner",
+        "intermediate"
+      ],
+      "appetite_tags": [
+        "all"
+      ],
+      "goal_tags": [
+        "capital_preservation",
+        "retirement",
+        "wealth_creation"
+      ]
+    },
+    {
+      "id": "feed-007",
+      "title": "Budget 2024 capex push and listed-sector read-through",
+      "summary": "Interim Budget 2024 capex guidance is studied historically to understand how policy spending themes influenced infra and industrial sectors.",
+      "tags": [
+        "budget",
+        "policy",
+        "infrastructure",
+        "capital-goods"
+      ],
+      "published_at": "2024-02-01",
+      "source_name": "PIB Budget Releases",
+      "source_url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2007356",
+      "audience_levels": [
+        "beginner",
+        "intermediate"
+      ],
+      "appetite_tags": [
+        "moderate",
+        "aggressive"
+      ],
+      "goal_tags": [
+        "wealth_creation"
+      ]
+    },
+    {
+      "id": "feed-008",
+      "title": "AMFI industry data: AUM and SIP trends as learning signals",
+      "summary": "AMFI's industry data is used to track long-term participation and product preference shifts instead of short-term return chasing.",
+      "tags": [
+        "mutual-fund",
+        "amfi",
+        "sip",
+        "flows"
+      ],
+      "published_at": "2025-12-31",
+      "source_name": "AMFI NAVAll",
+      "source_url": "https://www.amfiindia.com/research-information/other-data/mf-industry-data",
+      "audience_levels": [
+        "beginner",
+        "intermediate"
+      ],
+      "appetite_tags": [
+        "all"
+      ],
+      "goal_tags": [
+        "retirement",
+        "income",
+        "wealth_creation"
+      ]
+    },
+    {
+      "id": "feed-009",
+      "title": "Nifty 50 at 25,000: interpreting index milestones calmly",
+      "summary": "Index milestones are treated as historical context markers; learners focus on breadth, valuation zones, and earnings support.",
+      "tags": [
+        "index",
+        "nifty",
+        "valuation",
+        "cycles"
+      ],
+      "published_at": "2024-08-01",
+      "source_name": "NSE Milestones",
+      "source_url": "https://www.nseindia.com/about/milestones",
+      "audience_levels": [
+        "beginner",
+        "intermediate"
+      ],
+      "appetite_tags": [
+        "moderate",
+        "aggressive"
+      ],
+      "goal_tags": [
+        "wealth_creation"
+      ]
+    },
+    {
+      "id": "feed-010",
+      "title": "Riskometer updates and suitability checks for fund investors",
+      "summary": "SEBI riskometer guidance is used to map fund categories to investor suitability and reduce mismatch between risk and behavior.",
+      "tags": [
+        "mutual-fund",
+        "risk",
+        "riskometer",
+        "sebi"
+      ],
+      "published_at": "2020-10-05",
+      "source_name": "SEBI Circulars",
+      "source_url": "https://www.sebi.gov.in/legal/circulars/oct-2020/product-labelling-in-mutual-fund-schemes-riskometer_47867.html",
+      "audience_levels": [
+        "beginner",
+        "intermediate"
+      ],
+      "appetite_tags": [
+        "conservative",
+        "moderate",
+        "aggressive"
+      ],
+      "goal_tags": [
+        "capital_preservation",
+        "retirement",
+        "wealth_creation"
+      ]
+    },
+    {
+      "id": "feed-011",
+      "title": "Investor base expansion and what it means for behavior",
+      "summary": "Rising demat participation offers a historical lens on retail behavior, volatility episodes, and the importance of process discipline.",
+      "tags": [
+        "investor-behavior",
+        "retail",
+        "nse",
+        "volatility"
+      ],
+      "published_at": "2025-01-20",
+      "source_name": "NSE Milestones",
+      "source_url": "https://www.nseindia.com/about/milestones",
+      "audience_levels": [
+        "beginner",
+        "intermediate"
+      ],
+      "appetite_tags": [
+        "all"
+      ],
+      "goal_tags": [
+        "wealth_creation",
+        "capital_preservation"
+      ]
+    },
+    {
+      "id": "feed-012",
+      "title": "Building debt context for equity investors using RBI data",
+      "summary": "Even equity-focused learners use RBI market and rates context to understand valuation sensitivity and drawdown phases.",
+      "tags": [
+        "debt",
+        "rbi",
+        "rates",
+        "risk"
+      ],
+      "published_at": "2025-05-29",
+      "source_name": "RBI Annual Report",
+      "source_url": "https://www.rbi.org.in/Scripts/AnnualReportPublications.aspx?Id=1369",
+      "audience_levels": [
+        "intermediate",
+        "beginner"
+      ],
+      "appetite_tags": [
+        "conservative",
+        "moderate"
+      ],
+      "goal_tags": [
+        "capital_preservation",
+        "retirement"
+      ]
     }
   ],
   "model_portfolios": [
@@ -176,19 +481,143 @@
   "glossary_terms": [
     {
       "term": "P/E Ratio",
-      "definition": "Price-to-earnings ratio, a common valuation measure based on earnings per share."
+      "definition": "Price-to-earnings ratio compares a company's market price with its earnings per share.",
+      "why_it_matters": "It gives a quick valuation check and helps compare similar companies in the same sector.",
+      "example": "If a stock trades at INR 2,000 and earns INR 100 per share, the P/E ratio is 20.",
+      "risk_note": "A low P/E is not always cheap and a high P/E is not always expensive; earnings quality and growth matter.",
+      "related_terms": ["EPS", "Market Cap", "Sector"],
+      "source_name": "NSE Investor Resources",
+      "source_url": "https://www.nseindia.com/learn/investors-intermediaries-resources"
     },
     {
       "term": "Market Cap",
-      "definition": "Total market value of a company's outstanding shares."
+      "definition": "Market capitalization is the total market value of all outstanding shares of a listed company.",
+      "why_it_matters": "It helps classify companies as large-cap, mid-cap, or small-cap and indicates relative business size.",
+      "example": "A company with 100 crore shares and a price of INR 500 has a market cap of INR 50,000 crore.",
+      "risk_note": "Large market cap does not guarantee safety; governance, debt, and business cycles still affect returns.",
+      "related_terms": ["Large Cap", "Mid Cap", "Small Cap"],
+      "source_name": "SEBI Master Circular - Mutual Funds",
+      "source_url": "https://www.sebi.gov.in/legal/master-circulars/jun-2024/master-circular-for-mutual-funds_83277.html"
     },
     {
       "term": "Volatility",
-      "definition": "How much a price moves over time; a proxy for risk."
+      "definition": "Volatility measures how sharply and how often a price moves up or down over a period.",
+      "why_it_matters": "It helps match investments to your risk appetite and prevents panic decisions during sharp moves.",
+      "example": "A stock that moves +/-4% daily is more volatile than a debt fund moving +/-0.1%.",
+      "risk_note": "Higher volatility can create both upside and downside; avoid using borrowed money for volatile assets.",
+      "related_terms": ["Risk Appetite", "Beta", "Drawdown"],
+      "source_name": "SEBI Investor Education",
+      "source_url": "https://investor.sebi.gov.in/"
     },
     {
       "term": "Diversification",
-      "definition": "Spreading exposure across assets to reduce concentrated risk."
+      "definition": "Diversification means spreading investments across assets, sectors, and styles instead of betting on one idea.",
+      "why_it_matters": "It reduces the impact of one poor performer on your total portfolio.",
+      "example": "An investor splits money across large-cap equity, debt funds, and gold ETFs instead of one stock.",
+      "risk_note": "Diversification reduces concentration risk, but it cannot eliminate market risk.",
+      "related_terms": ["Asset Allocation", "Risk Appetite", "ETF"],
+      "source_name": "NSE Investor Resources",
+      "source_url": "https://www.nseindia.com/learn/investors-intermediaries-resources"
+    },
+    {
+      "term": "SIP",
+      "definition": "Systematic Investment Plan (SIP) is a method of investing a fixed amount at regular intervals, usually monthly.",
+      "why_it_matters": "It builds discipline and reduces timing pressure by averaging purchase prices across market cycles.",
+      "example": "Investing INR 5,000 every month in an equity mutual fund through SIP.",
+      "risk_note": "SIP reduces timing risk, not product risk; choosing a poor fund can still hurt long-term outcomes.",
+      "related_terms": ["NAV", "Expense Ratio", "Rupee Cost Averaging"],
+      "source_name": "AMFI Investor Corner",
+      "source_url": "https://www.amfiindia.com/investor-corner"
+    },
+    {
+      "term": "NAV",
+      "definition": "Net Asset Value is the per-unit value of a mutual fund after accounting for assets and liabilities.",
+      "why_it_matters": "It is the base price used to buy or redeem mutual fund units.",
+      "example": "If you invest INR 10,000 at an NAV of 50, you get 200 units.",
+      "risk_note": "A lower NAV does not mean a fund is cheaper; compare strategy, risk, and track record instead.",
+      "related_terms": ["SIP", "AUM", "Expense Ratio"],
+      "source_name": "AMFI NAVAll",
+      "source_url": "https://www.amfiindia.com/spages/NAVAll.txt"
+    },
+    {
+      "term": "Expense Ratio",
+      "definition": "Expense ratio is the annual fee a fund charges for managing your money, shown as a percentage of assets.",
+      "why_it_matters": "It directly reduces your net returns, especially over long investment horizons.",
+      "example": "On INR 1,00,000, a 1.5% expense ratio means roughly INR 1,500 per year in costs.",
+      "risk_note": "Lower cost is important but should be evaluated together with consistency, risk controls, and mandate.",
+      "related_terms": ["Direct Plan", "Regular Plan", "TER"],
+      "source_name": "AMFI Knowledge Center",
+      "source_url": "https://www.amfiindia.com/investor-corner/knowledge-center/what-is-expense-ratio"
+    },
+    {
+      "term": "CAGR",
+      "definition": "Compound Annual Growth Rate is the annualized growth rate of an investment over multiple years.",
+      "why_it_matters": "It enables fair comparison between investments held for different periods.",
+      "example": "If INR 1,00,000 grows to INR 1,33,100 in 3 years, CAGR is about 10%.",
+      "risk_note": "CAGR smooths the journey and can hide interim drawdowns or volatility.",
+      "related_terms": ["XIRR", "Drawdown", "Volatility"],
+      "source_name": "SEBI Investor Education",
+      "source_url": "https://investor.sebi.gov.in/"
+    },
+    {
+      "term": "Beta",
+      "definition": "Beta indicates how much a stock or fund tends to move compared with a market index.",
+      "why_it_matters": "It helps estimate sensitivity to market swings when building a portfolio.",
+      "example": "A beta of 1.2 suggests the asset may move about 12% when the index moves 10%.",
+      "risk_note": "Beta is based on historical data and may not hold in structural market changes.",
+      "related_terms": ["Volatility", "Index", "Risk Appetite"],
+      "source_name": "NSE Investor Resources",
+      "source_url": "https://www.nseindia.com/learn/investors-intermediaries-resources"
+    },
+    {
+      "term": "Drawdown",
+      "definition": "Drawdown is the percentage fall from a portfolio or asset's peak value to its next low.",
+      "why_it_matters": "It helps you understand downside pain and assess whether a strategy matches your tolerance.",
+      "example": "If value drops from INR 10 lakh to INR 7.5 lakh, drawdown is 25%.",
+      "risk_note": "Ignoring drawdown can lead to panic exits during stress periods.",
+      "related_terms": ["Volatility", "Risk Appetite", "Asset Allocation"],
+      "source_name": "SEBI Investor Education",
+      "source_url": "https://investor.sebi.gov.in/"
+    },
+    {
+      "term": "Asset Allocation",
+      "definition": "Asset allocation is the mix of equity, debt, gold, and cash chosen for a portfolio.",
+      "why_it_matters": "It is one of the strongest drivers of long-term risk and return outcomes.",
+      "example": "A moderate profile may use 60% equity, 30% debt, and 10% gold.",
+      "risk_note": "Wrong allocation for your goal or horizon can force losses if money is needed early.",
+      "related_terms": ["Diversification", "Risk Appetite", "Rebalancing"],
+      "source_name": "NSE Investor Resources",
+      "source_url": "https://www.nseindia.com/learn/investors-intermediaries-resources"
+    },
+    {
+      "term": "ETF",
+      "definition": "Exchange Traded Fund is a pooled investment that tracks an index or theme and trades on stock exchanges like a share.",
+      "why_it_matters": "It provides diversified market exposure with transparent holdings and intraday liquidity.",
+      "example": "A Nifty 50 ETF gives exposure to the Nifty 50 basket in one trade.",
+      "risk_note": "Watch tracking error, liquidity, and bid-ask spread before investing.",
+      "related_terms": ["Index Fund", "Tracking Error", "Liquidity"],
+      "source_name": "NSE ETF Booklet",
+      "source_url": "https://nsearchives.nseindia.com/education/content/ETF_booklet.pdf"
+    },
+    {
+      "term": "Risk-Adjusted Return",
+      "definition": "Risk-adjusted return measures performance after considering the risk taken to generate that return.",
+      "why_it_matters": "It helps compare two products fairly when one takes much higher volatility or downside risk.",
+      "example": "Two funds return 12%, but the one with lower volatility may have better risk-adjusted return.",
+      "risk_note": "Do not rely on one ratio alone; combine it with drawdown, consistency, and mandate fit.",
+      "related_terms": ["Volatility", "Drawdown", "Sharpe Ratio"],
+      "source_name": "SEBI Circular",
+      "source_url": "https://www.sebi.gov.in/legal/circulars/jan-2025/disclosure-of-risk-adjusted-return-by-mutual-funds_89961.html"
+    },
+    {
+      "term": "KYC",
+      "definition": "Know Your Customer (KYC) is the identity verification process required before investing in many regulated products.",
+      "why_it_matters": "Without compliant KYC, transactions can be delayed, restricted, or rejected.",
+      "example": "Submitting PAN, address proof, and completing verification before starting an SIP.",
+      "risk_note": "Incomplete or outdated KYC can interrupt redemptions and fresh purchases.",
+      "related_terms": ["PAN", "FATCA", "Nomination"],
+      "source_name": "NSE KYC Procedure",
+      "source_url": "https://nsearchives.nseindia.com/education/content/KYC_Procedure.pdf"
     }
   ],
   "assets": [

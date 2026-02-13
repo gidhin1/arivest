@@ -5,6 +5,10 @@ class ResearchItem {
     required this.summary,
     required this.tags,
     required this.publishedAt,
+    this.sourceName,
+    this.sourceUrl,
+    this.matchReasons = const [],
+    this.matchScore = 0,
   });
 
   final String id;
@@ -12,6 +16,10 @@ class ResearchItem {
   final String summary;
   final List<String> tags;
   final DateTime publishedAt;
+  final String? sourceName;
+  final String? sourceUrl;
+  final List<String> matchReasons;
+  final int matchScore;
 
   factory ResearchItem.fromJson(Map<String, dynamic> json) {
     return ResearchItem(
@@ -20,15 +28,18 @@ class ResearchItem {
       summary: json['summary'] as String,
       tags: List<String>.from(json['tags'] as List<dynamic>),
       publishedAt: DateTime.parse(json['published_at'] as String),
+      sourceName: json['source_name'] as String?,
+      sourceUrl: json['source_url'] as String?,
+      matchReasons: List<String>.from(
+        (json['match_reasons'] as List<dynamic>? ?? const []),
+      ),
+      matchScore: json['match_score'] as int? ?? 0,
     );
   }
 }
 
 class Allocation {
-  Allocation({
-    required this.label,
-    required this.weight,
-  });
+  Allocation({required this.label, required this.weight});
 
   final String label;
   final double weight;
@@ -73,15 +84,35 @@ class GlossaryTerm {
   GlossaryTerm({
     required this.term,
     required this.definition,
+    this.whyItMatters,
+    this.example,
+    this.riskNote,
+    this.relatedTerms = const [],
+    this.sourceName,
+    this.sourceUrl,
   });
 
   final String term;
   final String definition;
+  final String? whyItMatters;
+  final String? example;
+  final String? riskNote;
+  final List<String> relatedTerms;
+  final String? sourceName;
+  final String? sourceUrl;
 
   factory GlossaryTerm.fromJson(Map<String, dynamic> json) {
     return GlossaryTerm(
       term: json['term'] as String,
       definition: json['definition'] as String,
+      whyItMatters: json['why_it_matters'] as String?,
+      example: json['example'] as String?,
+      riskNote: json['risk_note'] as String?,
+      relatedTerms: List<String>.from(
+        (json['related_terms'] as List<dynamic>? ?? const []),
+      ),
+      sourceName: json['source_name'] as String?,
+      sourceUrl: json['source_url'] as String?,
     );
   }
 }
@@ -91,17 +122,32 @@ class RiskProfileInput {
     required this.appetite,
     this.horizonYears,
     this.monthlyInvestment,
+    this.experienceLevel,
+    this.primaryGoal,
+    this.ageGroup,
+    this.preferredSectors = const [],
+    this.weeklyLearningMinutes,
   });
 
   final String appetite;
   final int? horizonYears;
   final int? monthlyInvestment;
+  final String? experienceLevel;
+  final String? primaryGoal;
+  final String? ageGroup;
+  final List<String> preferredSectors;
+  final int? weeklyLearningMinutes;
 
   Map<String, dynamic> toJson() {
     return {
       'appetite': appetite,
       'horizon_years': horizonYears,
       'monthly_investment': monthlyInvestment,
+      'experience_level': experienceLevel,
+      'primary_goal': primaryGoal,
+      'age_group': ageGroup,
+      'preferred_sectors': preferredSectors,
+      'weekly_learning_minutes': weeklyLearningMinutes,
     };
   }
 }
@@ -111,6 +157,11 @@ class RiskProfileResponse extends RiskProfileInput {
     required super.appetite,
     super.horizonYears,
     super.monthlyInvestment,
+    super.experienceLevel,
+    super.primaryGoal,
+    super.ageGroup,
+    super.preferredSectors,
+    super.weeklyLearningMinutes,
     required this.id,
     required this.createdAt,
   });
@@ -124,17 +175,77 @@ class RiskProfileResponse extends RiskProfileInput {
       appetite: json['appetite'] as String,
       horizonYears: json['horizon_years'] as int?,
       monthlyInvestment: json['monthly_investment'] as int?,
+      experienceLevel: json['experience_level'] as String?,
+      primaryGoal: json['primary_goal'] as String?,
+      ageGroup: json['age_group'] as String?,
+      preferredSectors: List<String>.from(
+        (json['preferred_sectors'] as List<dynamic>? ?? const []),
+      ),
+      weeklyLearningMinutes: json['weekly_learning_minutes'] as int?,
       createdAt: DateTime.parse(json['created_at'] as String),
     );
   }
 }
 
-class SearchMeta {
-  SearchMeta({
-    required this.mode,
-    required this.note,
-    required this.asOf,
+class AuthUser {
+  AuthUser({
+    required this.id,
+    required this.email,
+    this.displayName,
+    required this.createdAt,
   });
+
+  final int id;
+  final String email;
+  final String? displayName;
+  final DateTime createdAt;
+
+  factory AuthUser.fromJson(Map<String, dynamic> json) {
+    return AuthUser(
+      id: json['id'] as int,
+      email: json['email'] as String,
+      displayName: json['display_name'] as String?,
+      createdAt: DateTime.parse(json['created_at'] as String),
+    );
+  }
+}
+
+class AuthSessionResponse {
+  AuthSessionResponse({
+    required this.user,
+    required this.sessionToken,
+    required this.expiresAt,
+  });
+
+  final AuthUser user;
+  final String sessionToken;
+  final DateTime expiresAt;
+
+  factory AuthSessionResponse.fromJson(Map<String, dynamic> json) {
+    return AuthSessionResponse(
+      user: AuthUser.fromJson(json['user'] as Map<String, dynamic>),
+      sessionToken: json['session_token'] as String,
+      expiresAt: DateTime.parse(json['expires_at'] as String),
+    );
+  }
+}
+
+class AuthSessionStatus {
+  AuthSessionStatus({required this.user, required this.expiresAt});
+
+  final AuthUser user;
+  final DateTime expiresAt;
+
+  factory AuthSessionStatus.fromJson(Map<String, dynamic> json) {
+    return AuthSessionStatus(
+      user: AuthUser.fromJson(json['user'] as Map<String, dynamic>),
+      expiresAt: DateTime.parse(json['expires_at'] as String),
+    );
+  }
+}
+
+class SearchMeta {
+  SearchMeta({required this.mode, required this.note, required this.asOf});
 
   final String mode;
   final String? note;
@@ -200,10 +311,7 @@ class AssetSummary {
 }
 
 class SearchResponse {
-  SearchResponse({
-    required this.items,
-    required this.meta,
-  });
+  SearchResponse({required this.items, required this.meta});
 
   final List<AssetSummary> items;
   final SearchMeta meta;
@@ -413,8 +521,9 @@ class AssetDetail {
       listings: (json['listings'] as List<dynamic>? ?? const [])
           .map((item) => AssetListing.fromJson(item as Map<String, dynamic>))
           .toList(),
-      snapshot:
-          AssetSnapshot.fromJson(json['snapshot'] as Map<String, dynamic>),
+      snapshot: AssetSnapshot.fromJson(
+        json['snapshot'] as Map<String, dynamic>,
+      ),
       metrics: json['metrics'] == null
           ? null
           : AssetMetrics.fromJson(json['metrics'] as Map<String, dynamic>),
@@ -422,17 +531,16 @@ class AssetDetail {
           ? null
           : PlanDetails.fromJson(json['plan_details'] as Map<String, dynamic>),
       sources: (json['sources'] as List<dynamic>? ?? const [])
-          .map((item) => SourceAttribution.fromJson(item as Map<String, dynamic>))
+          .map(
+            (item) => SourceAttribution.fromJson(item as Map<String, dynamic>),
+          )
           .toList(),
     );
   }
 }
 
 class AssetDetailResponse {
-  AssetDetailResponse({
-    required this.asset,
-    required this.meta,
-  });
+  AssetDetailResponse({required this.asset, required this.meta});
 
   final AssetDetail asset;
   final SearchMeta meta;

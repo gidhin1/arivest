@@ -1,13 +1,23 @@
 import json
 import os
-from typing import Optional
+import re
+from datetime import datetime, timezone
+from typing import Optional, Tuple
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Depends, HTTPException, Query
+from fastapi import FastAPI, Depends, HTTPException, Query, Header, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
+from .auth import (
+    normalize_email,
+    hash_password,
+    verify_password,
+    generate_session_token,
+    hash_session_token,
+    session_expiry,
+)
 from .db import init_db, get_session
 from .models import (
     RiskProfile,
@@ -23,6 +33,8 @@ from .models import (
     PlanDetail,
     AssetSource,
     DataSource,
+    UserModel,
+    UserSessionModel,
 )
 from .schemas import (
     RiskProfileIn,
@@ -32,6 +44,10 @@ from .schemas import (
     GlossaryTerm,
     SearchResponse,
     AssetDetailResponse,
+    AuthRegisterIn,
+    AuthLoginIn,
+    AuthSessionOut,
+    AuthSessionStatus,
 )
 from .seed import seed_demo_data, seed_meta, policy_config
 
@@ -87,6 +103,94 @@ def get_policy(db: Session = Depends(get_session)):
     return {"version": policy.version, "statement": policy.statement}
 
 
+EMAIL_REGEX = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+
+
+def _is_valid_email(email: str) -> bool:
+    return bool(EMAIL_REGEX.match(email))
+
+
+def _extract_bearer_token(authorization: Optional[str]) -> str:
+    if not authorization:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication required",
+        )
+    scheme, _, token = authorization.partition(" ")
+    if scheme.lower() != "bearer" or not token.strip():
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid authorization header",
+        )
+    return token.strip()
+
+
+def _to_utc(value: datetime) -> datetime:
+    if value.tzinfo is None:
+        return value.replace(tzinfo=timezone.utc)
+    return value.astimezone(timezone.utc)
+
+
+def _build_auth_session(
+    db: Session,
+    user: UserModel,
+    *,
+    token: Optional[str] = None,
+) -> AuthSessionOut:
+    plain_token = token or generate_session_token()
+    session_row = UserSessionModel(
+        user_id=user.id,
+        token_hash=hash_session_token(plain_token),
+        expires_at=session_expiry(),
+    )
+    db.add(session_row)
+    db.commit()
+    db.refresh(user)
+    db.refresh(session_row)
+    return AuthSessionOut(
+        user=user,
+        session_token=plain_token,
+        expires_at=session_row.expires_at,
+    )
+
+
+def _require_user_session(
+    authorization: Optional[str],
+    db: Session,
+) -> Tuple[UserModel, UserSessionModel]:
+    token = _extract_bearer_token(authorization)
+    session_row = (
+        db.query(UserSessionModel)
+        .filter(UserSessionModel.token_hash == hash_session_token(token))
+        .first()
+    )
+    if session_row is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid session",
+        )
+
+    now = datetime.now(timezone.utc)
+    if session_row.revoked_at is not None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Session is logged out",
+        )
+    if _to_utc(session_row.expires_at) <= now:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Session expired",
+        )
+
+    user = db.query(UserModel).filter(UserModel.id == session_row.user_id).first()
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid session user",
+        )
+    return user, session_row
+
+
 def _parse_tags(raw: Optional[str]) -> list[str]:
     if not raw:
         return []
@@ -99,23 +203,174 @@ def _parse_tags(raw: Optional[str]) -> list[str]:
     return [tag.strip() for tag in raw.split(",") if tag.strip()]
 
 
+def _normalized_set(values: list[str]) -> set[str]:
+    return {value.strip().lower() for value in values if value and value.strip()}
+
+
+def _parse_csv(raw: Optional[str]) -> list[str]:
+    if not raw:
+        return []
+    return [item.strip() for item in raw.split(",") if item.strip()]
+
+
+@app.post(
+    "/auth/register",
+    response_model=AuthSessionOut,
+    status_code=status.HTTP_201_CREATED,
+)
+def register_user(payload: AuthRegisterIn, db: Session = Depends(get_session)):
+    email = normalize_email(payload.email)
+    if not _is_valid_email(email):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Provide a valid email address",
+        )
+
+    existing = db.query(UserModel).filter(UserModel.email == email).first()
+    if existing is not None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="An account with this email already exists",
+        )
+
+    display_name = payload.display_name.strip() if payload.display_name else None
+    salt_hex, password_hash_hex = hash_password(payload.password)
+    user = UserModel(
+        email=email,
+        display_name=display_name,
+        password_hash=password_hash_hex,
+        password_salt=salt_hex,
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+
+    return _build_auth_session(db, user)
+
+
+@app.post("/auth/login", response_model=AuthSessionOut)
+def login_user(payload: AuthLoginIn, db: Session = Depends(get_session)):
+    email = normalize_email(payload.email)
+    user = db.query(UserModel).filter(UserModel.email == email).first()
+    if user is None or not verify_password(
+        payload.password,
+        user.password_salt,
+        user.password_hash,
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password",
+        )
+
+    return _build_auth_session(db, user)
+
+
+@app.get("/auth/session", response_model=AuthSessionStatus)
+def get_auth_session(
+    authorization: Optional[str] = Header(default=None),
+    db: Session = Depends(get_session),
+):
+    user, session_row = _require_user_session(authorization, db)
+    return AuthSessionStatus(user=user, expires_at=session_row.expires_at)
+
+
+@app.post("/auth/logout", status_code=status.HTTP_204_NO_CONTENT)
+def logout_user(
+    authorization: Optional[str] = Header(default=None),
+    db: Session = Depends(get_session),
+):
+    _, session_row = _require_user_session(authorization, db)
+    session_row.revoked_at = datetime.now(timezone.utc)
+    db.commit()
+    return None
+
+
 @app.get("/research/feed", response_model=list[ResearchItem])
-def get_research_feed(db: Session = Depends(get_session)):
+def get_research_feed(
+    appetite: Optional[str] = Query(default=None, max_length=32),
+    experience_level: Optional[str] = Query(default=None, max_length=32),
+    primary_goal: Optional[str] = Query(default=None, max_length=32),
+    preferred_sectors: Optional[str] = Query(default=None, max_length=240),
+    db: Session = Depends(get_session),
+):
+    normalized_appetite = (appetite or "").strip().lower()
+    normalized_experience = (experience_level or "").strip().lower()
+    normalized_goal = (primary_goal or "").strip().lower()
+    preferred_sector_set = _normalized_set(_parse_csv(preferred_sectors))
+
+    has_profile_signals = bool(
+        normalized_appetite
+        or normalized_experience
+        or normalized_goal
+        or preferred_sector_set
+    )
+
     items = (
         db.query(ResearchItemModel)
         .order_by(ResearchItemModel.published_at.desc())
         .all()
     )
-    return [
-        {
+
+    records = []
+    for item in items:
+        tags = _parse_tags(item.tags)
+        tag_set = _normalized_set(tags)
+        audience_set = _normalized_set(_parse_tags(item.audience_levels))
+        appetite_set = _normalized_set(_parse_tags(item.appetite_tags))
+        goal_set = _normalized_set(_parse_tags(item.goal_tags))
+
+        score = 0
+        reasons: list[str] = []
+
+        if normalized_experience:
+            if normalized_experience in audience_set:
+                score += 3
+                reasons.append("Matches your experience level")
+            elif "all" in audience_set:
+                score += 1
+        if normalized_appetite:
+            if normalized_appetite in appetite_set:
+                score += 2
+                reasons.append("Aligned with your risk appetite")
+            elif "all" in appetite_set:
+                score += 1
+        if normalized_goal:
+            if normalized_goal in goal_set:
+                score += 2
+                reasons.append("Supports your primary goal")
+            elif "all" in goal_set:
+                score += 1
+        if preferred_sector_set:
+            overlap = sorted(preferred_sector_set.intersection(tag_set))
+            if overlap:
+                score += 1
+                reasons.append(
+                    "Related to preferred sectors: " + ", ".join(overlap[:3])
+                )
+
+        records.append(
+            {
             "id": item.slug,
             "title": item.title,
             "summary": item.summary,
-            "tags": _parse_tags(item.tags),
+            "tags": tags,
             "published_at": item.published_at,
+            "source_name": item.source_name,
+            "source_url": item.source_url,
+            "match_reasons": reasons,
+            "match_score": score,
         }
-        for item in items
-    ]
+        )
+
+    if has_profile_signals:
+        records.sort(
+            key=lambda entry: (entry["match_score"], entry["published_at"]),
+            reverse=True,
+        )
+    else:
+        records.sort(key=lambda entry: entry["published_at"], reverse=True)
+
+    return records
 
 
 @app.get("/portfolios/models", response_model=list[ModelPortfolio])
@@ -154,20 +409,49 @@ def get_model_portfolios(db: Session = Depends(get_session)):
 @app.get("/glossary", response_model=list[GlossaryTerm])
 def get_glossary(db: Session = Depends(get_session)):
     terms = db.query(GlossaryTermModel).order_by(GlossaryTermModel.term.asc()).all()
-    return [{"term": term.term, "definition": term.definition} for term in terms]
+    return [
+        {
+            "term": term.term,
+            "definition": term.definition,
+            "why_it_matters": term.why_it_matters,
+            "example": term.example,
+            "risk_note": term.risk_note,
+            "related_terms": _parse_tags(term.related_terms),
+            "source_name": term.source_name,
+            "source_url": term.source_url,
+        }
+        for term in terms
+    ]
 
 
 @app.post("/risk-profile", response_model=RiskProfileOut)
 def create_risk_profile(payload: RiskProfileIn, db: Session = Depends(get_session)):
+    preferred_sectors = payload.preferred_sectors[:5]
     profile = RiskProfile(
         appetite=payload.appetite,
         horizon_years=payload.horizon_years,
         monthly_investment=payload.monthly_investment,
+        experience_level=payload.experience_level,
+        primary_goal=payload.primary_goal,
+        age_group=payload.age_group,
+        preferred_sectors=json.dumps(preferred_sectors),
+        weekly_learning_minutes=payload.weekly_learning_minutes,
     )
     db.add(profile)
     db.commit()
     db.refresh(profile)
-    return profile
+    return {
+        "id": profile.id,
+        "appetite": profile.appetite,
+        "horizon_years": profile.horizon_years,
+        "monthly_investment": profile.monthly_investment,
+        "experience_level": profile.experience_level,
+        "primary_goal": profile.primary_goal,
+        "age_group": profile.age_group,
+        "preferred_sectors": preferred_sectors,
+        "weekly_learning_minutes": profile.weekly_learning_minutes,
+        "created_at": profile.created_at,
+    }
 
 
 @app.get("/search/assets", response_model=SearchResponse)

@@ -8,6 +8,7 @@
 
 ## Demo seed data
 - On startup, the API seeds demo data from `app/seed_data.json` (idempotent; no duplicates).
+- Research feed entries include source attribution and profile-targeting metadata.
 - If you already have an older `arivest.db`, delete it to recreate tables with the latest schema.
 - To force reset without deleting: run with `ARIVEST_RESET_DB=1` once.
 
@@ -17,7 +18,11 @@
 
 ## Endpoints
 - `GET /health`
-- `GET /research/feed`
+- `POST /auth/register`
+- `POST /auth/login`
+- `GET /auth/session` (requires `Authorization: Bearer <token>`)
+- `POST /auth/logout` (requires `Authorization: Bearer <token>`)
+- `GET /research/feed` (optional personalization query params: `appetite`, `experience_level`, `primary_goal`, `preferred_sectors`)
 - `GET /portfolios/models`
 - `GET /glossary`
 - `GET /search/assets`

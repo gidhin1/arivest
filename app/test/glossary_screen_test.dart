@@ -11,12 +11,8 @@ void main() {
   testWidgets('Glossary screen renders terms', (tester) async {
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [
-          apiClientProvider.overrideWithValue(FakeApiClient()),
-        ],
-        child: const MaterialApp(
-          home: GlossaryScreen(),
-        ),
+        overrides: [apiClientProvider.overrideWithValue(FakeApiClient())],
+        child: const MaterialApp(home: GlossaryScreen()),
       ),
     );
 
@@ -24,5 +20,10 @@ void main() {
 
     expect(find.text(sampleGlossary.first.term), findsOneWidget);
     expect(find.text(sampleGlossary.first.definition), findsOneWidget);
+    expect(find.text('Why it matters'), findsOneWidget);
+    expect(find.textContaining('Example:'), findsOneWidget);
+    expect(find.textContaining('Risk note:'), findsOneWidget);
+    expect(find.text('Large Cap'), findsOneWidget);
+    expect(find.text('Read source'), findsOneWidget);
   });
 }

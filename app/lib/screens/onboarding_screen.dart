@@ -18,17 +18,48 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 }
 
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
+  static const _goalOptions = <String, String>{
+    'wealth_creation': 'Wealth creation',
+    'retirement': 'Retirement corpus',
+    'income': 'Regular income',
+    'capital_preservation': 'Capital preservation',
+  };
+
+  static const _ageOptions = <String, String>{
+    '18-25': '18-25',
+    '26-35': '26-35',
+    '36-50': '36-50',
+    '50+': '50+',
+  };
+
+  static const _sectorOptions = <String>[
+    'technology',
+    'banking',
+    'pharma',
+    'energy',
+    'infrastructure',
+    'consumer',
+    'auto',
+    'capital-goods',
+  ];
+
   final _formKey = GlobalKey<FormState>();
   final _horizonController = TextEditingController();
   final _monthlyController = TextEditingController();
+  final _weeklyLearningController = TextEditingController();
 
   String _appetite = 'moderate';
+  String _experienceLevel = 'beginner';
+  String _primaryGoal = 'wealth_creation';
+  String _ageGroup = '26-35';
+  final Set<String> _selectedSectors = <String>{};
   bool _submitting = false;
 
   @override
   void dispose() {
     _horizonController.dispose();
     _monthlyController.dispose();
+    _weeklyLearningController.dispose();
     super.dispose();
   }
 
@@ -55,15 +86,27 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
     final horizon = int.tryParse(_horizonController.text.trim());
     final monthly = int.tryParse(_monthlyController.text.trim());
+    final weeklyLearning = int.tryParse(_weeklyLearningController.text.trim());
+    final selectedSectors = _selectedSectors.toList(growable: false);
 
     final payload = RiskProfileInput(
       appetite: _appetite,
       horizonYears: horizon,
       monthlyInvestment: monthly,
+      experienceLevel: _experienceLevel,
+      primaryGoal: _primaryGoal,
+      ageGroup: _ageGroup,
+      preferredSectors: selectedSectors,
+      weeklyLearningMinutes: weeklyLearning,
     );
 
     ref.read(riskProfileDraftProvider.notifier).state = RiskProfileDraft(
       appetite: _appetite,
+      experienceLevel: _experienceLevel,
+      primaryGoal: _primaryGoal,
+      ageGroup: _ageGroup,
+      preferredSectors: selectedSectors,
+      weeklyLearningMinutes: weeklyLearning,
       horizonYears: horizon,
       monthlyInvestment: monthly,
     );
@@ -86,6 +129,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     }
 
     if (mounted) {
+      await ref.read(authControllerProvider.notifier).completeOnboarding();
+      if (!mounted) {
+        return;
+      }
       ref.read(onboardingCompleteProvider.notifier).state = true;
       context.go('/home');
     }
@@ -113,18 +160,17 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 Text(
                   'Start your learning plan',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   'Tell us your comfort level and goals. We curate past-only research and model portfolios to match your learning pace.',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withValues(alpha: 0.7),
-                      ),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.7),
+                  ),
                 ),
                 const SizedBox(height: 16),
                 const PolicyNotice(),
@@ -146,10 +192,76 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                             spacing: 8,
                             runSpacing: 8,
                             children: [
-                              _buildAppetiteChip('conservative', 'Conservative'),
+                              _buildAppetiteChip(
+                                'conservative',
+                                'Conservative',
+                              ),
                               _buildAppetiteChip('moderate', 'Moderate'),
                               _buildAppetiteChip('aggressive', 'Aggressive'),
                             ],
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            'Experience level',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          const SizedBox(height: 12),
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: [
+                              _buildExperienceChip('beginner', 'Beginner'),
+                              _buildExperienceChip(
+                                'intermediate',
+                                'Intermediate',
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            'Primary goal',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          const SizedBox(height: 8),
+                          DropdownButtonFormField<String>(
+                            initialValue: _primaryGoal,
+                            items: _goalOptions.entries
+                                .map(
+                                  (entry) => DropdownMenuItem<String>(
+                                    value: entry.key,
+                                    child: Text(entry.value),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: (value) {
+                              if (value == null) {
+                                return;
+                              }
+                              setState(() => _primaryGoal = value);
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            'Age group',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          const SizedBox(height: 8),
+                          DropdownButtonFormField<String>(
+                            initialValue: _ageGroup,
+                            items: _ageOptions.entries
+                                .map(
+                                  (entry) => DropdownMenuItem<String>(
+                                    value: entry.key,
+                                    child: Text(entry.value),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: (value) {
+                              if (value == null) {
+                                return;
+                              }
+                              setState(() => _ageGroup = value);
+                            },
                           ),
                           const SizedBox(height: 20),
                           Text(
@@ -163,7 +275,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                             decoration: const InputDecoration(
                               hintText: 'e.g., 5',
                             ),
-                            validator: (value) => _validateOptionalInt(value, min: 1),
+                            validator: (value) =>
+                                _validateOptionalInt(value, min: 1),
                           ),
                           const SizedBox(height: 20),
                           Text(
@@ -177,7 +290,53 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                             decoration: const InputDecoration(
                               hintText: 'e.g., 10000',
                             ),
-                            validator: (value) => _validateOptionalInt(value, min: 0),
+                            validator: (value) =>
+                                _validateOptionalInt(value, min: 0),
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            'Weekly learning time (minutes)',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          const SizedBox(height: 8),
+                          TextFormField(
+                            controller: _weeklyLearningController,
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                              hintText: 'e.g., 90',
+                            ),
+                            validator: (value) =>
+                                _validateOptionalInt(value, min: 15),
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            'Preferred sectors (pick up to 3)',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          const SizedBox(height: 12),
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: _sectorOptions
+                                .map(
+                                  (sector) => FilterChip(
+                                    label: Text(_toTitleCase(sector)),
+                                    selected: _selectedSectors.contains(sector),
+                                    onSelected: (selected) {
+                                      setState(() {
+                                        if (selected) {
+                                          if (_selectedSectors.length >= 3) {
+                                            return;
+                                          }
+                                          _selectedSectors.add(sector);
+                                        } else {
+                                          _selectedSectors.remove(sector);
+                                        }
+                                      });
+                                    },
+                                  ),
+                                )
+                                .toList(),
                           ),
                           const SizedBox(height: 24),
                           SizedBox(
@@ -188,7 +347,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                                   ? const SizedBox(
                                       height: 20,
                                       width: 20,
-                                      child: CircularProgressIndicator(strokeWidth: 2),
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
                                     )
                                   : const Text('Create learning plan'),
                             ),
@@ -196,11 +357,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           const SizedBox(height: 12),
                           Text(
                             'Education and research only. Not investment advice.',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface
-                                          .withValues(alpha: 0.6),
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: Theme.of(context).colorScheme.onSurface
+                                      .withValues(alpha: 0.6),
                                 ),
                           ),
                         ],
@@ -225,5 +385,28 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         setState(() => _appetite = value);
       },
     );
+  }
+
+  Widget _buildExperienceChip(String value, String label) {
+    final isSelected = _experienceLevel == value;
+    return ChoiceChip(
+      label: Text(label),
+      selected: isSelected,
+      onSelected: (_) {
+        setState(() => _experienceLevel = value);
+      },
+    );
+  }
+
+  String _toTitleCase(String input) {
+    return input
+        .split('-')
+        .map((chunk) {
+          if (chunk.isEmpty) {
+            return chunk;
+          }
+          return '${chunk[0].toUpperCase()}${chunk.substring(1)}';
+        })
+        .join(' ');
   }
 }

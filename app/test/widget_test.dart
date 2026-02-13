@@ -9,17 +9,25 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:arivest/app.dart';
+import 'package:arivest/state/providers.dart';
+
+import 'helpers/fake_api_client.dart';
+import 'helpers/in_memory_session_store.dart';
 
 void main() {
-  testWidgets('Arivest app loads onboarding', (WidgetTester tester) async {
+  testWidgets('Arivest app loads login screen', (WidgetTester tester) async {
     await tester.pumpWidget(
-      const ProviderScope(
+      ProviderScope(
+        overrides: [
+          apiClientProvider.overrideWithValue(FakeApiClient()),
+          sessionStoreProvider.overrideWithValue(InMemorySessionStore()),
+        ],
         child: ArivestApp(),
       ),
     );
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(find.text('Arivest'), findsOneWidget);
-    expect(find.text('Arivu for smart investing.'), findsOneWidget);
+    expect(find.text('Welcome back'), findsOneWidget);
   });
 }

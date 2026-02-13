@@ -93,12 +93,20 @@ def seed_demo_data() -> None:
         for item in payload.get("research_feed", []):
             existing = db.query(ResearchItemModel).filter_by(slug=item["id"]).first()
             tags_value = json.dumps(item.get("tags", []))
+            audience_levels = json.dumps(item.get("audience_levels", []))
+            appetite_tags = json.dumps(item.get("appetite_tags", []))
+            goal_tags = json.dumps(item.get("goal_tags", []))
             if existing is None:
                 existing = ResearchItemModel(
                     slug=item["id"],
                     title=item["title"],
                     summary=item["summary"],
                     tags=tags_value,
+                    source_name=item.get("source_name"),
+                    source_url=item.get("source_url"),
+                    audience_levels=audience_levels,
+                    appetite_tags=appetite_tags,
+                    goal_tags=goal_tags,
                     published_at=date.fromisoformat(item["published_at"]),
                 )
                 db.add(existing)
@@ -106,6 +114,11 @@ def seed_demo_data() -> None:
                 existing.title = item["title"]
                 existing.summary = item["summary"]
                 existing.tags = tags_value
+                existing.source_name = item.get("source_name")
+                existing.source_url = item.get("source_url")
+                existing.audience_levels = audience_levels
+                existing.appetite_tags = appetite_tags
+                existing.goal_tags = goal_tags
                 existing.published_at = date.fromisoformat(item["published_at"])
 
         for portfolio in payload.get("model_portfolios", []):
@@ -141,14 +154,27 @@ def seed_demo_data() -> None:
 
         for term in payload.get("glossary_terms", []):
             existing = db.query(GlossaryTermModel).filter_by(term=term["term"]).first()
+            related_terms = json.dumps(term.get("related_terms", []))
             if existing is None:
                 existing = GlossaryTermModel(
                     term=term["term"],
                     definition=term["definition"],
+                    why_it_matters=term.get("why_it_matters"),
+                    example=term.get("example"),
+                    risk_note=term.get("risk_note"),
+                    related_terms=related_terms,
+                    source_name=term.get("source_name"),
+                    source_url=term.get("source_url"),
                 )
                 db.add(existing)
             else:
                 existing.definition = term["definition"]
+                existing.why_it_matters = term.get("why_it_matters")
+                existing.example = term.get("example")
+                existing.risk_note = term.get("risk_note")
+                existing.related_terms = related_terms
+                existing.source_name = term.get("source_name")
+                existing.source_url = term.get("source_url")
 
         for asset in payload.get("assets", []):
             record = db.query(Asset).filter_by(slug=asset["slug"]).first()
