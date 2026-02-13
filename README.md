@@ -24,6 +24,8 @@ To override the API URL:
 ## Notes
 - Education and research only. No personalized investment advice.
 - SQLite is used for the MVP. Postgres can be added later.
+- Authentication is token-based (`/auth/register`, `/auth/login`, `/auth/session`, `/auth/logout`).
+- Research feed is profile-aware (risk, experience, goal, preferred sectors).
 
 ## Database access (UI tools)
 You can open the SQLite database at `backend/arivest.db` using a GUI:
