@@ -3,21 +3,29 @@ import 'package:flutter/material.dart';
 import '../design_system.dart';
 
 class StatChip extends StatelessWidget {
-  const StatChip({super.key, required this.label, required this.value});
+  const StatChip({
+    super.key,
+    required this.label,
+    required this.value,
+    this.onTap,
+  });
 
   final String label;
   final String value;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final tokens = DesignSystem.tokens;
-    return Container(
+    final content = Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(tokens.radii.chip),
-        border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.2)),
+        border: Border.all(
+          color: theme.colorScheme.outline.withValues(alpha: 0.2),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,6 +46,17 @@ class StatChip extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+    if (onTap == null) {
+      return content;
+    }
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(tokens.radii.chip),
+        onTap: onTap,
+        child: content,
       ),
     );
   }

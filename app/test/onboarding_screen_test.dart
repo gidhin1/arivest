@@ -10,12 +10,8 @@ void main() {
   testWidgets('Onboarding screen renders core fields', (tester) async {
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [
-          apiClientProvider.overrideWithValue(FakeApiClient()),
-        ],
-        child: const MaterialApp(
-          home: OnboardingScreen(),
-        ),
+        overrides: [apiClientProvider.overrideWithValue(FakeApiClient())],
+        child: const MaterialApp(home: OnboardingScreen()),
       ),
     );
 
@@ -23,8 +19,13 @@ void main() {
     expect(find.text('Start your learning plan'), findsOneWidget);
     expect(find.text('Past-only research'), findsOneWidget);
     expect(find.text('Risk appetite'), findsOneWidget);
+    expect(find.text('Experience level'), findsOneWidget);
+    expect(find.text('Primary goal'), findsOneWidget);
+    expect(find.text('Age group'), findsOneWidget);
     expect(find.text('Time horizon (years)'), findsOneWidget);
     expect(find.text('Monthly investment (INR)'), findsOneWidget);
+    expect(find.text('Weekly learning time (minutes)'), findsOneWidget);
+    expect(find.text('Preferred sectors (pick up to 3)'), findsOneWidget);
     expect(find.text('Create learning plan'), findsOneWidget);
   });
 }

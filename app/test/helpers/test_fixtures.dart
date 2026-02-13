@@ -7,6 +7,22 @@ final sampleResearchFeed = [
     summary: 'A quick look at how cycles affect long-term investors.',
     tags: const ['basics', 'cycles'],
     publishedAt: DateTime(2026, 2, 10),
+    sourceName: 'NSE Milestones',
+    sourceUrl: 'https://www.nseindia.com/about/milestones',
+    matchReasons: const ['Matches your experience level'],
+    matchScore: 3,
+  ),
+  ResearchItem(
+    id: 'sample-2',
+    title: 'Mutual fund disclosures that matter',
+    summary: 'How risk-adjusted disclosures help compare funds.',
+    tags: const ['mutual-fund', 'risk'],
+    publishedAt: DateTime(2026, 2, 9),
+    sourceName: 'SEBI Circulars',
+    sourceUrl:
+        'https://www.sebi.gov.in/legal/circulars/jan-2025/disclosure-of-risk-adjusted-return-by-mutual-funds_89961.html',
+    matchReasons: const ['Aligned with your risk appetite'],
+    matchScore: 2,
   ),
 ];
 
@@ -29,6 +45,15 @@ final sampleGlossary = [
   GlossaryTerm(
     term: 'Market Cap',
     definition: 'Total market value of outstanding shares.',
+    whyItMatters: 'Helps compare company size and risk profile.',
+    example:
+        'If 100 crore shares trade at INR 500, market cap is INR 50,000 crore.',
+    riskNote:
+        'Large companies can still underperform during sector or governance stress.',
+    relatedTerms: const ['Large Cap', 'Mid Cap', 'Small Cap'],
+    sourceName: 'SEBI Master Circular - Mutual Funds',
+    sourceUrl:
+        'https://www.sebi.gov.in/legal/master-circulars/jun-2024/master-circular-for-mutual-funds_83277.html',
   ),
 ];
 
@@ -130,7 +155,8 @@ final samplePlanAssetDetailResponse = AssetDetailResponse(
       riskLevel: 'moderate',
       tags: const ['mutual fund', 'large cap'],
     ),
-    description: 'Large cap equity mutual fund focused on established companies.',
+    description:
+        'Large cap equity mutual fund focused on established companies.',
     listings: [
       AssetListing(
         exchange: 'AMFI',
@@ -151,10 +177,7 @@ final samplePlanAssetDetailResponse = AssetDetailResponse(
       low: null,
       volume: null,
     ),
-    metrics: AssetMetrics(
-      expenseRatio: 0.7,
-      aum: 35000,
-    ),
+    metrics: AssetMetrics(expenseRatio: 0.7, aum: 35000),
     planDetails: PlanDetails(
       planType: 'mutual_fund',
       provider: 'SBI Mutual Fund',
@@ -182,4 +205,22 @@ final samplePlanAssetDetailResponse = AssetDetailResponse(
     note: 'Sample values for UI development only.',
     asOf: DateTime(2026, 2, 10),
   ),
+);
+
+final sampleAuthUser = AuthUser(
+  id: 1,
+  email: 'demo@arivest.in',
+  displayName: 'Demo User',
+  createdAt: DateTime(2026, 2, 10),
+);
+
+final sampleAuthSessionResponse = AuthSessionResponse(
+  user: sampleAuthUser,
+  sessionToken: 'sample-session-token',
+  expiresAt: DateTime(2026, 2, 20),
+);
+
+final sampleAuthSessionStatus = AuthSessionStatus(
+  user: sampleAuthUser,
+  expiresAt: DateTime(2026, 2, 20),
 );

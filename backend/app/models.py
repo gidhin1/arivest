@@ -20,6 +20,11 @@ class RiskProfile(Base):
     appetite = Column(String(32), nullable=False)
     horizon_years = Column(Integer, nullable=True)
     monthly_investment = Column(Integer, nullable=True)
+    experience_level = Column(String(24), nullable=True)
+    primary_goal = Column(String(32), nullable=True)
+    age_group = Column(String(16), nullable=True)
+    preferred_sectors = Column(Text, nullable=True)
+    weekly_learning_minutes = Column(Integer, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
 
@@ -31,6 +36,11 @@ class ResearchItemModel(Base):
     title = Column(String(200), nullable=False)
     summary = Column(Text, nullable=False)
     tags = Column(Text, nullable=True)
+    source_name = Column(String(160), nullable=True)
+    source_url = Column(String(400), nullable=True)
+    audience_levels = Column(Text, nullable=True)
+    appetite_tags = Column(Text, nullable=True)
+    goal_tags = Column(Text, nullable=True)
     published_at = Column(Date, nullable=False)
 
 
@@ -63,6 +73,12 @@ class GlossaryTermModel(Base):
     id = Column(Integer, primary_key=True, index=True)
     term = Column(String(120), nullable=False, unique=True, index=True)
     definition = Column(Text, nullable=False)
+    why_it_matters = Column(Text, nullable=True)
+    example = Column(Text, nullable=True)
+    risk_note = Column(Text, nullable=True)
+    related_terms = Column(Text, nullable=True)
+    source_name = Column(String(160), nullable=True)
+    source_url = Column(String(400), nullable=True)
 
 
 class PolicyModel(Base):
@@ -212,3 +228,28 @@ class AssetSource(Base):
     asset_id = Column(Integer, ForeignKey("assets.id"), nullable=False, index=True)
     source_id = Column(Integer, ForeignKey("data_sources.id"), nullable=False, index=True)
     note = Column(String(200), nullable=True)
+
+
+class UserModel(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String(255), nullable=False, unique=True, index=True)
+    display_name = Column(String(120), nullable=True)
+    password_hash = Column(String(128), nullable=False)
+    password_salt = Column(String(64), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+
+class UserSessionModel(Base):
+    __tablename__ = "user_sessions"
+    __table_args__ = (
+        UniqueConstraint("token_hash", name="uq_user_session_token_hash"),
+    )
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    token_hash = Column(String(128), nullable=False, index=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    expires_at = Column(DateTime(timezone=True), nullable=False, index=True)
+    revoked_at = Column(DateTime(timezone=True), nullable=True)
